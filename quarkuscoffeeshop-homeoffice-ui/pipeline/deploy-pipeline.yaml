@@ -1,0 +1,60 @@
+apiVersion: tekton.dev/v1alpha1
+kind: Pipeline
+metadata:
+  name: build-and-push-quarkuscoffeeshop-homeoffice-ui
+  labels:
+    app: quarkuscoffeeshop-homeoffice-ui
+spec:
+  resources:
+    - name: app-git
+      type: git
+    - name: image
+      type: image
+  params:
+    - default: takinosh
+      name: quay-io-account
+      type: string
+    - default: "quay.io/quarkuscoffeeshop/quarkuscoffeeshop-homeoffice-ui"
+      name: quay-io-repository
+      type: string
+    - default: latest
+      name: quay-io-image-tag-name
+      type: string
+    - default: overlay
+      name: STORAGE_DRIVER
+      type: string
+    - default: v1.0
+      description: Image Tag Value
+      name: IMAGE_TAG
+      type: string
+  tasks:
+  - name: build
+    taskRef:
+      name: s2i-nodejs
+    params:
+      - name: TLSVERIFY
+        value: "false"
+      - name: IMAGE_TAG
+        value: $(params.IMAGE_TAG)
+    resources:
+      inputs:
+      - name: source
+        resource: app-git
+      outputs:
+      - name: image
+        resource: image
+  - name: push-image-to-quay
+    taskRef:
+      kind: Task
+      name: push-image-to-quay
+    params:
+      - name: quay-io-repository
+        value: $(params.quay-io-repository)
+      - name: quay-io-image-tag-name
+        value: $(params.quay-io-image-tag-name)
+    resources:
+      inputs:
+      - name: image
+        resource: image
+    runAfter:
+      - build
