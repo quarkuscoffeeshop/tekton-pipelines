@@ -92,5 +92,26 @@ oc -n quarkuscoffeeshop-cicd create -f  ./quarkuscoffeeshop-homeoffice-ui/resour
 oc -n quarkuscoffeeshop-cicd create -f  ./quarkuscoffeeshop-homeoffice-ui/pipeline/deploy-pipeline.yaml
 ```
 
+**Create GitHub Trigger for Pipeline**
+```
+oc -n quarkuscoffeeshop-cicd create -f ./triggerbinding-configs/webhook-roles.yaml
+oc -n quarkuscoffeeshop-cicd create -f ./triggerbinding-configs/github-triggerbinding.yaml
+WEBHOOK_SECRET="$(openssl rand -base64 12)"
+oc -n quarkuscoffeeshop-cicd create secret generic webhook-secret --from-literal=secret=${WEBHOOK_SECRET}
+echo ${WEBHOOK_SECRET} > saved-secert.txt
+sed -i "s/<git-triggerbinding>/github-triggerbinding/" ./quarkuscoffeeshop-homeoffice-ui/webhook.yaml
+sed -i "/ref: github-triggerbinding/d" ./quarkuscoffeeshop-homeoffice-ui/webhook.yaml
+sed -i "s/- name: pipeline-binding/- name: github-triggerbinding/" ./quarkuscoffeeshop-homeoffice-ui/webhook.yaml
+oc -n quarkuscoffeeshop-cicd create -f  ./quarkuscoffeeshop-homeoffice-ui/webhook.yaml
+```
+
+**Create HomeOffice Webhook**
+```
+oc -n quarkuscoffeeshop-cicd create route edge homeoffice-ui-webhook --service=el-homeoffice-ui-webhook --port=8080 --insecure-policy=Redirect
+```
+
+
+oc -n quarkuscoffeeshop-cicd  get route homeoffice-ui-webhook -o jsonpath='https://{.spec.host}'
+
 ## To-Do
 * add trigger for pipeline
