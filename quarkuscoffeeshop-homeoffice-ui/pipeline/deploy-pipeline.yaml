@@ -27,6 +27,10 @@ spec:
       description: Image Tag Value
       name: IMAGE_TAG
       type: string
+    - default: webhook-secret
+      description: Webhook secert name
+      name: webhook-secret
+      type: string
   tasks:
   - name: build
     taskRef:
@@ -58,3 +62,14 @@ spec:
         resource: image
     runAfter:
       - build
+  - name: send-to-webhook-slack
+    taskRef:
+      kind: Task
+      name: send-to-webhook-slack
+    params:
+      - name: webhook-secret
+        value: $(params.webhook-secret)
+      - name: message
+        value: "Pipeline build pushed succesfully to  $(params.quay-io-repository):$(params.quay-io-image-tag-name)"
+    runAfter:
+      - push-image-to-quay
