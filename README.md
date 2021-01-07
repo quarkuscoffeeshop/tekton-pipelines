@@ -16,22 +16,6 @@ spec:
 EOF
 ```
 
-**Install OpenShift Pipelines 4.5**
-```
-cat <<EOF | oc -n openshift-operators create -f -
-apiVersion: operators.coreos.com/v1alpha1
-kind: Subscription
-metadata:
-  name: openshift-pipelines-operator-rh
-spec:
-  channel: ocp-4.5
-  installPlanApproval: Automatic
-  name: openshift-pipelines-operator-rh
-  source: redhat-operators
-  sourceNamespace: openshift-marketplace
-EOF
-```
-
 **Install tkn cli**  
 `on linux`
 ```
@@ -68,50 +52,15 @@ type: kubernetes.io/dockerconfigjson
 oc create -f quay-secret.yml --namespace=quarkuscoffeeshop-cicd
 ```
 
-## quarkuscoffeeshop-homeoffice-ui tekton pipeline
-**configure pvc**
+**configure slack webhook**
 ```
-oc -n quarkuscoffeeshop-cicd create -f quarkuscoffeeshop-homeoffice-ui/pvc/pvc.yml
+oc create -f send-to-webhook-slack.yaml
+oc create -f webhook-secret.yaml
 ```
+## quarkuscoffeeshop-homeoffice-ui tekton pipline 
+[quarkuscoffeeshop-homeoffice-ui](quarkuscoffeeshop-homeoffice-ui/README.md)
 
-**configure Tasks**
-```
-oc -n quarkuscoffeeshop-cicd create -f ./quarkuscoffeeshop-homeoffice-ui/tektontasks/s2i-nodejs-task.yaml
-oc -n quarkuscoffeeshop-cicd create -f ./quarkuscoffeeshop-homeoffice-ui/tektontasks/openshift-client-task.yaml
-oc -n  quarkuscoffeeshop-cicd create -f ./quarkuscoffeeshop-homeoffice-ui/tektontasks/pushImageToQuay.yaml
-```
-
-**configure Resources**
-```
-oc -n quarkuscoffeeshop-cicd create -f  ./quarkuscoffeeshop-homeoffice-ui/resources/image-pipeline-resource.yaml.in
-oc -n quarkuscoffeeshop-cicd create -f  ./quarkuscoffeeshop-homeoffice-ui/resources/git-pipeline-resource.yaml
-```
-
-**Create Pipeline**
-```
-oc -n quarkuscoffeeshop-cicd create -f  ./quarkuscoffeeshop-homeoffice-ui/pipeline/deploy-pipeline.yaml
-```
-
-**Create GitHub Trigger for Pipeline**
-```
-oc -n quarkuscoffeeshop-cicd create -f ./triggerbinding-configs/webhook-roles.yaml
-oc -n quarkuscoffeeshop-cicd create -f ./triggerbinding-configs/github-triggerbinding.yaml
-WEBHOOK_SECRET="$(openssl rand -base64 12)"
-oc -n quarkuscoffeeshop-cicd create secret generic webhook-secret --from-literal=secret=${WEBHOOK_SECRET}
-echo ${WEBHOOK_SECRET} > saved-secert.txt
-sed -i "s/<git-triggerbinding>/github-triggerbinding/" ./quarkuscoffeeshop-homeoffice-ui/webhook.yaml
-sed -i "/ref: github-triggerbinding/d" ./quarkuscoffeeshop-homeoffice-ui/webhook.yaml
-sed -i "s/- name: pipeline-binding/- name: github-triggerbinding/" ./quarkuscoffeeshop-homeoffice-ui/webhook.yaml
-oc -n quarkuscoffeeshop-cicd create -f  ./quarkuscoffeeshop-homeoffice-ui/webhook.yaml
-```
-
-**Create HomeOffice Webhook**
-```
-oc -n quarkuscoffeeshop-cicd create route edge homeoffice-ui-webhook --service=el-homeoffice-ui-webhook --port=8080 --insecure-policy=Redirect
-```
+## homeoffice-backend tekton pipline 
+[homeoffice-backend](homeoffice-backend/README.md)
 
 
-oc -n quarkuscoffeeshop-cicd  get route homeoffice-ui-webhook -o jsonpath='https://{.spec.host}'
-
-## To-Do
-* add trigger for pipeline

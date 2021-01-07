@@ -20,6 +20,11 @@ spec:
       description: Webhook secert name
       name: webhook-secret
       type: string
+    - default: >-
+        --patch={"spec":{"template":{"spec":{"containers":[{"name":"homeoffice-backend","image":"image-registry.openshift-image-registry.svc:5000/quarkuscoffeeshop-cicd/homeoffice-backend:$(params.IMAGE_TAG)"}]}}}}
+      description: patch image
+      name: PATCH_IMAGE
+      type: string
   resources:
     - name: app-git
       type: git
@@ -78,6 +83,32 @@ spec:
       workspaces:
         - name: source
           workspace: shared-workspace
+    - name: tag-test-image
+      params:
+        - name: ARGS
+          value:
+            - tag
+            - 'homeoffice-backend:$(params.IMAGE_TAG)'
+            - 'homeoffice-backend:latest'
+      runAfter:
+        - build-java-app-image
+      taskRef:
+        kind: ClusterTask
+        name: openshift-client
+    - name: push-to-test-env
+      params:
+        - name: ARGS
+          value:
+            - patch
+            - deployment/homeoffice-backend
+            - $(params.PATCH_IMAGE)
+            - '-n'
+            - quarkuscoffeeshop-homeoffice
+      runAfter:
+        - tag-test-image
+      taskRef:
+        kind: ClusterTask
+        name: openshift-client
     - name: push-homeoffice-backend-image-to-quay
       params:
         - name: quay-io-repository
@@ -89,7 +120,7 @@ spec:
           - name: image
             resource: image
       runAfter:
-        - build-java-app-image
+        - push-to-test-env
       taskRef:
         kind: Task
         name: push-homeoffice-backend-image-to-quay
