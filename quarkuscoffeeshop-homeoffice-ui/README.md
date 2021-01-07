@@ -48,7 +48,7 @@ oc -n quarkuscoffeeshop-cicd  get route homeoffice-ui-webhook -o jsonpath='https
 
 ```
 
-Configure web hook for quarkuscoffeeshop-homeoffice-ui
+**Configure web hook for quarkuscoffeeshop-homeoffice-ui**
 
     > **NOTE**: Every Git server has its own properties, but basically you want to provide the ingress url for our webhook and when the Git server should send the hook. E.g: push events, PR events, etc.
 
