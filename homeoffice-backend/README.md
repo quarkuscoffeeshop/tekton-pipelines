@@ -1,6 +1,8 @@
 
 ## homeoffice-backend tekton pipeline
 
+![homeoffice-backend-pipeline](../images/homeoffice-backend-pipeline.png)
+
 **configure pvc**
 ```
 oc -n quarkuscoffeeshop-cicd create -f homeoffice-backend/pvc/pvc.yml

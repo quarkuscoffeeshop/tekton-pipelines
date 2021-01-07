@@ -1,5 +1,9 @@
 
 ## quarkuscoffeeshop-homeoffice-ui tekton pipeline
+
+![homeoffice-dashboard](../images/homeoffice-dashboard.png)
+![homeoffice-ui-pipeline](../images/homeoffice-ui-pipeline.png)
+
 **configure pvc**
 ```
 oc -n quarkuscoffeeshop-cicd create -f quarkuscoffeeshop-homeoffice-ui/pvc/pvc.yml
