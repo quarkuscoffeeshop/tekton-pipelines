@@ -103,7 +103,7 @@ spec:
             - deployment/quarkuscoffeeshop-web
             - $(params.PATCH_IMAGE)
             - '-n'
-            - quarkuscoffeeshop-homeoffice
+            - quarkuscoffeeshop-demo
       runAfter:
         - tag-test-image
       taskRef:
