@@ -9,13 +9,16 @@ oc -n quarkuscoffeeshop-cicd create -f homeoffice-backend/pvc/pvc.yml
 oc -n quarkuscoffeeshop-cicd create -f  ./homeoffice-backend/pvc/maven-source-pvc.yml
 ```
 
-
 **configure Tasks**
 ```
 oc -n quarkuscoffeeshop-cicd create -f ./common-functions/tasks/git-clone.yaml
 oc -n quarkuscoffeeshop-cicd create -f ./common-functions/tasks/openshift-client-task.yaml
+oc -n  quarkuscoffeeshop-cicd create -f ./common-functions/tasks/maven.yaml
+```
+
+**Configure push image to quay task**
+```
 oc -n  quarkuscoffeeshop-cicd create -f ./homeoffice-backend/tektontasks/pushImageToQuay.yaml
-oc -n  quarkuscoffeeshop-cicd create -f ./homeoffice-backend/tektontasks/maven.yaml
 ```
 
 **configure Resources**
