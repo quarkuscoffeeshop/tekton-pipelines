@@ -1,5 +1,5 @@
-## quarkuscoffeeshop-web tekton pipeline
-![quarkuscoffeeshop-counter](../images/quarkuscoffeeshop-counter.png)
+## quarkuscoffeeshop-kitchen tekton pipeline
+![quarkuscoffeeshop-kitchen](../images/quarkuscoffeeshop-kitchen.png)
 
 **configure pvc**
 ```
