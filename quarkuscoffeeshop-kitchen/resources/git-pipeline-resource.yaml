@@ -1,0 +1,11 @@
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineResource
+metadata:
+  name: quarkuscoffeeshop-kitchen-git
+  labels:
+    app: quarkuscoffeeshop-kitchen
+spec:
+  type: git
+  params:
+  - name: url
+    value: https://github.com/quarkuscoffeeshop/quarkuscoffeeshop-kitchen

@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: quarkuscoffeeshop-barista-pipeline-task-cache-pvc
+  namespace: quarkuscoffeeshop-cicd
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
