@@ -1,11 +1,11 @@
 ## quarkuscoffeeshop-counter tekton pipeline
+![quarkuscoffeeshop-counter](../images/quarkuscoffeeshop-counter.png)
 
 **configure pvc**
 ```
 oc -n quarkuscoffeeshop-cicd create -f quarkuscoffeeshop-counter/pvc/pvc.yml
 oc -n quarkuscoffeeshop-cicd create -f  ./quarkuscoffeeshop-counter/pvc/maven-source-pvc.yml
 ```
-
 
 **configure Tasks**
 ```
