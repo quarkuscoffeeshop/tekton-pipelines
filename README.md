@@ -21,7 +21,7 @@ $ cat >deploy-quarkus-cafe.yml<<YAML
     insecure_skip_tls_verify: true
     default_owner: ${USER}
     default_group: ${USER}
-    project_namespace: quarkuscoffeeshop-demo
+    project_namespace: quarkuscoffeeshop-demo # Change to quarkuscoffeeshop-homeoffice for back office deployments 
     delete_deployment: false
     skip_amq_install: false
     skip_configure_postgres: false
