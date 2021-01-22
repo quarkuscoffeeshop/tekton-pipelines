@@ -1,9 +1,9 @@
-## quarkuscoffeeshop-web tekton pipeline
+## quarkuscoffeeshop-kitchen tekton pipeline
 
 **configure pvc**
 ```
-oc -n quarkuscoffeeshop-cicd create -f quarkuscoffeeshop-web/pvc/pvc.yml
-oc -n quarkuscoffeeshop-cicd create -f  ./quarkuscoffeeshop-web/pvc/maven-source-pvc.yml
+oc -n quarkuscoffeeshop-cicd create -f quarkuscoffeeshop-kitchen/pvc/pvc.yml
+oc -n quarkuscoffeeshop-cicd create -f  ./quarkuscoffeeshop-kitchen/pvc/maven-source-pvc.yml
 ```
 
 
@@ -16,18 +16,18 @@ oc -n  quarkuscoffeeshop-cicd create -f ./common-functions/tasks/maven.yaml
 
 **Configure push image to quay task**
 ```
-oc -n  quarkuscoffeeshop-cicd create -f ./quarkuscoffeeshop-web/tektontasks/pushImageToQuay.yaml
+oc -n  quarkuscoffeeshop-cicd create -f ./quarkuscoffeeshop-kitchen/tektontasks/pushImageToQuay.yaml
 ```
 
 **configure Resources**
 ```
-oc -n quarkuscoffeeshop-cicd create -f  ./quarkuscoffeeshop-web/resources/git-pipeline-resource.yaml
-oc -n quarkuscoffeeshop-cicd create -f  ./quarkuscoffeeshop-web/resources/image-pipeline-resource.yaml
+oc -n quarkuscoffeeshop-cicd create -f  ./quarkuscoffeeshop-kitchen/resources/git-pipeline-resource.yaml
+oc -n quarkuscoffeeshop-cicd create -f  ./quarkuscoffeeshop-kitchen/resources/image-pipeline-resource.yaml
 ```
 
 **Create Pipeline**
 ```
-oc -n quarkuscoffeeshop-cicd create -f  ./quarkuscoffeeshop-web/pipeline/deploy-pipeline.yaml
+oc -n quarkuscoffeeshop-cicd create -f  ./quarkuscoffeeshop-kitchen/pipeline/deploy-pipeline.yaml
 ```
 
 
@@ -38,6 +38,6 @@ oc policy add-role-to-group system:image-puller system:serviceaccounts:quarkusco
 oc adm policy add-role-to-user admin system:serviceaccount:quarkuscoffeeshop-cicd:pipeline -n quarkuscoffeeshop-demo
 
 oc project quarkuscoffeeshop-demo
-oc new-app quarkuscoffeeshop-cicd/quarkuscoffeeshop-web:latest -n quarkuscoffeeshop-demo
-oc expose service/quarkuscoffeeshop-web -n quarkuscoffeeshop-demo
+oc new-app quarkuscoffeeshop-cicd/quarkuscoffeeshop-kitchen:latest -n quarkuscoffeeshop-demo
+oc expose service/quarkuscoffeeshop-kitchen -n quarkuscoffeeshop-demo
 ```
