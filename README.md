@@ -95,10 +95,10 @@ oc create -f webhook-secret.yaml
 ```
 
 ## HOME Office (Backoffice)
-**quarkuscoffeeshop-homeoffice-ui tekton pipline**
+**quarkuscoffeeshop-homeoffice-ui tekton pipline**  
 [quarkuscoffeeshop-homeoffice-ui](quarkuscoffeeshop-homeoffice-ui/README.md)
 
-**homeoffice-backend tekton pipline** 
+**homeoffice-backend tekton pipline**  
 [homeoffice-backend](homeoffice-backend/README.md)
 
 ## Store front microservices  
