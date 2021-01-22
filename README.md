@@ -93,22 +93,26 @@ oc create -f quay-secret.yml --namespace=quarkuscoffeeshop-cicd
 oc create -f send-to-webhook-slack.yaml
 oc create -f webhook-secret.yaml
 ```
-## quarkuscoffeeshop-homeoffice-ui tekton pipline 
+
+## HOME Office (Backoffice)
+**quarkuscoffeeshop-homeoffice-ui tekton pipline**
 [quarkuscoffeeshop-homeoffice-ui](quarkuscoffeeshop-homeoffice-ui/README.md)
 
-## homeoffice-backend tekton pipline 
+**homeoffice-backend tekton pipline** 
 [homeoffice-backend](homeoffice-backend/README.md)
 
-## quarkuscoffeeshop-barista tekton pipline 
+## Store front microservices  
+
+**quarkuscoffeeshop-barista tekton pipline**  
 [quarkuscoffeeshop-barista](quarkuscoffeeshop-barista/README.md)
 
-## quarkuscoffeeshop-counter tekton pipline 
+**quarkuscoffeeshop-counter tekton pipline**  
 [quarkuscoffeeshop-counter](quarkuscoffeeshop-counter/README.md)
 
-## quarkuscoffeeshop-kitchen tekton pipline 
+**quarkuscoffeeshop-kitchen tekton pipline**  
 [quarkuscoffeeshop-kitchen](quarkuscoffeeshop-kitchen/README.md)
 
-## quarkuscoffeeshop-homeoffice-ui tekton pipline 
+**quarkuscoffeeshop-homeoffice-ui tekton pipline**   
 [quarkuscoffeeshop-web](quarkuscoffeeshop-web/README.md)
 
 
