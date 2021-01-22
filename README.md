@@ -63,4 +63,18 @@ oc create -f webhook-secret.yaml
 ## homeoffice-backend tekton pipline 
 [homeoffice-backend](homeoffice-backend/README.md)
 
+## quarkuscoffeeshop-barista tekton pipline 
+[quarkuscoffeeshop-barista](quarkuscoffeeshop-barista/README.md)
+
+## quarkuscoffeeshop-counter tekton pipline 
+[quarkuscoffeeshop-counter](quarkuscoffeeshop-counter/README.md)
+
+## quarkuscoffeeshop-kitchen tekton pipline 
+[quarkuscoffeeshop-kitchen](quarkuscoffeeshop-kitchen/README.md)
+
+## quarkuscoffeeshop-homeoffice-ui tekton pipline 
+[quarkuscoffeeshop-web](quarkuscoffeeshop-web/README.md)
+
+
+
 

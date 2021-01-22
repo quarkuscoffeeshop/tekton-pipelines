@@ -1,5 +1,7 @@
 ## quarkuscoffeeshop-barista tekton pipeline
 
+![quarkuscoffeeshop-barista](../images/quarkuscoffeeshop-barista.png)
+
 **configure pvc**
 ```
 oc -n quarkuscoffeeshop-cicd create -f quarkuscoffeeshop-barista/pvc/pvc.yml
