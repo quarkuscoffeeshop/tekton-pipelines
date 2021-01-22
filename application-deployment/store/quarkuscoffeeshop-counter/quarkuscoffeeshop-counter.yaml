@@ -1,0 +1,81 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: quarkuscoffeeshop-counter
+  namespace: quarkuscoffeeshop-demo
+  labels:
+    app: quarkuscoffeeshop-counter
+spec:
+  ports:
+    - name: 8080-tcp
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
+  selector:
+    app: quarkuscoffeeshop-counter
+  type: ClusterIP
+  sessionAffinity: None
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: quarkuscoffeeshop-counter
+  namespace: quarkuscoffeeshop-demo
+  labels:
+    app: quarkuscoffeeshop-counter
+    app.kubernetes.io/name: quarkus
+    app.kubernetes.io/part-of: quarkuscoffeeshop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: quarkuscoffeeshop-counter
+  template:
+    metadata:
+      name: quarkuscoffeeshop-counter-deployment
+      labels:
+        app: quarkuscoffeeshop-counter
+        app.kubernetes.io/component: quarkuscoffeeshop-counter
+        app.kubernetes.io/instance: quarkuscoffeeshop-counter
+        app.kubernetes.io/part-of: quarkuscoffeeshop
+        app.openshift.io/runtime-namespace: quarkuscoffeeshop-demo
+        quarkuscoffeeshop: ''
+    spec:
+      containers:
+        - name: quarkuscoffeeshop-counter
+          image: 'image-registry.openshift-image-registry.svc:5000/quarkuscoffeeshop-cicd/quarkuscoffeeshop-counter:latest'
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          env:
+            - name: KAFKA_BOOTSTRAP_URLS
+              value: 'cafe-cluster-kafka-bootstrap:9092'
+            - name: PGSQL_URL
+              value: >-
+                jdbc:postgresql://coffeeshopdb:5432/coffeeshopdb?currentSchema=coffeeshop
+            - name: PGSQL_USER
+              value: coffeshopadmin
+            - name: PGSQL_PASS
+              value: 'CHANGEME'
+            - name: LOG_SQL
+              value: 'true'
+            - name: QUARKUS_LOG_LEVEL
+              value: INFO
+            - name: QUARKUSCOFFEESHOP_LOG_LEVEL
+              value: DEBUG
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          imagePullPolicy: Always
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      securityContext: {}
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600

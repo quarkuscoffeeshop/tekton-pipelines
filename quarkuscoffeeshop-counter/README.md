@@ -38,6 +38,10 @@ oc policy add-role-to-group system:image-puller system:serviceaccounts:quarkusco
 oc adm policy add-role-to-user admin system:serviceaccount:quarkuscoffeeshop-cicd:pipeline -n quarkuscoffeeshop-demo
 
 oc project quarkuscoffeeshop-demo
-oc new-app quarkuscoffeeshop-cicd/quarkuscoffeeshop-counter:latest -n quarkuscoffeeshop-demo
-oc expose service/quarkuscoffeeshop-counter -n quarkuscoffeeshop-demo
+oc create -f application-deployment/store/quarkuscoffeeshop-counter/quarkuscoffeeshop-counter.yaml  -n quarkuscoffeeshop-demo
+```
+
+**Update Enviornment Variables in deployment**
+```
+oc edit deployment.apps/quarkuscoffeeshop-counter
 ```

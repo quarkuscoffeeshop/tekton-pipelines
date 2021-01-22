@@ -1,0 +1,79 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: quarkuscoffeeshop-web
+  namespace: quarkuscoffeeshop-demo
+  labels:
+    app: quarkuscoffeeshop-web
+spec:
+  ports:
+    - name: 8080-tcp
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
+  selector:
+    app: quarkuscoffeeshop-web
+  type: ClusterIP
+  sessionAffinity: None
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: quarkuscoffeeshop-web
+  namespace: quarkuscoffeeshop-demo
+  labels:
+    app: quarkuscoffeeshop-web
+    app.kubernetes.io/name: quarkus
+    app.kubernetes.io/part-of: quarkuscoffeeshop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: quarkuscoffeeshop-web
+  template:
+    metadata:
+      name: quarkuscoffeeshop-web
+      labels:
+        app: quarkuscoffeeshop-web
+        app.kubernetes.io/component: quarkuscoffeeshop-web
+        app.kubernetes.io/instance: quarkuscoffeeshop-web
+        app.kubernetes.io/part-of: quarkuscoffeeshop
+        app.openshift.io/runtime-namespace: quarkuscoffeeshop-demo
+        quarkuscoffeeshop: ''
+    spec:
+      containers:
+        - name: quarkuscoffeeshop-web
+          image: 'quay.io/quarkuscoffeeshop/quarkuscoffeeshop-web:5.0.1-SNAPSHOT'
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          env:
+            - name: KAFKA_BOOTSTRAP_SERVERS
+              value: 'cafe-cluster-kafka-bootstrap:9092'
+            - name: REST_URL
+              value: >-
+                http://CHANGEME
+            - name: STREAM_URL
+              value: >-
+                http://CHANGEME/dashboard/stream
+            - name: CORS_ORIGINS
+              value: >-
+                http://CHANGEME
+            - name: STORE_ID
+              value: CHANGEME
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          imagePullPolicy: Always
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      securityContext: {}
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
