@@ -1,0 +1,75 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: quarkuscoffeeshop-barista
+  namespace: quarkuscoffeeshop-demo
+  labels:
+    app: quarkuscoffeeshop-barista
+spec:
+  ports:
+    - name: 8778-tcp
+      protocol: TCP
+      port: 8778
+      targetPort: 8778
+    - name: 9779-tcp
+      protocol: TCP
+      port: 9779
+      targetPort: 9779
+  selector:
+    app: quarkuscoffeeshop-barista
+  type: ClusterIP
+  sessionAffinity: None
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: quarkuscoffeeshop-barista
+  namespace: quarkuscoffeeshop-demo
+  labels:
+    app: quarkuscoffeeshop-barista
+    app.kubernetes.io/name: quarkus
+    app.kubernetes.io/part-of: quarkuscoffeeshop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: quarkuscoffeeshop-barista
+  template:
+    metadata:
+      name: quarkuscoffeeshop-barista-deployment
+      creationTimestamp: null
+      labels:
+        app: quarkuscoffeeshop-barista
+        app.kubernetes.io/component: quarkuscoffeeshop-barista
+        app.kubernetes.io/instance: quarkuscoffeeshop-barista
+        app.kubernetes.io/part-of: quarkuscoffeeshop
+        app.openshift.io/runtime-namespace: quarkuscoffeeshop-demo
+        quarkuscoffeeshop: ''
+    spec:
+      containers:
+        - name: quarkuscoffeeshop-barista
+          image: 'image-registry.openshift-image-registry.svc:5000/quarkuscoffeeshop-cicd/quarkuscoffeeshop-barista:latest'
+          ports:
+            - containerPort: 8778
+              protocol: TCP
+            - containerPort: 9779
+              protocol: TCP
+          env:
+            - name: KAFKA_BOOTSTRAP_URLS
+              value: 'cafe-cluster-kafka-bootstrap:9092'
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          imagePullPolicy: Always
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      securityContext: {}
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
