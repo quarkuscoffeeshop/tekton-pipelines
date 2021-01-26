@@ -1,0 +1,142 @@
+apiVersion: tekton.dev/v1alpha1
+kind: Pipeline
+metadata:
+  name: build-and-push-quarkuscoffeeshop-inventory
+  labels:
+    app: quarkuscoffeeshop-inventory
+spec:
+  params:
+    - default: latest
+      description: Image Tag Value
+      name: IMAGE_TAG
+      type: string
+    - default: quay.io/quarkuscoffeeshop/quarkuscoffeeshop-inventory
+      name: quay-io-repository
+      type: string
+    - default: latest
+      name: quay-io-image-tag-name
+      type: string
+    - default: webhook-secret
+      description: webhook secret name
+      name: webhook-secret
+      type: string
+    - default: >-
+        --patch={"spec":{"template":{"spec":{"containers":[{"name":"quarkuscoffeeshop-inventory","image":"image-registry.openshift-image-registry.svc:5000/quarkuscoffeeshop-cicd/quarkuscoffeeshop-inventory:$(params.IMAGE_TAG)"}]}}}}
+      description: patch image
+      name: PATCH_IMAGE
+      type: string
+  resources:
+    - name: app-git
+      type: git
+    - name: image
+      type: image
+  tasks:
+    - name: fetch-repository
+      params:
+        - name: url
+          value: 'https://github.com/quarkuscoffeeshop/quarkuscoffeeshop-inventory'
+        - name: subdirectory
+          value: ''
+        - name: deleteExisting
+          value: 'true'
+      taskRef:
+        kind: Task
+        name: git-clone
+      workspaces:
+        - name: output
+          workspace: shared-workspace
+    - name: maven-run
+      params:
+        - name: CONTEXT_DIR
+          value: .
+        - name: GOALS
+          value:
+            - '-DskipTests'
+            - clean
+            - package
+      runAfter:
+        - fetch-repository
+      taskRef:
+        kind: Task
+        name: maven
+      workspaces:
+        - name: maven-settings
+          workspace: maven-settings
+        - name: source
+          workspace: shared-workspace
+    - name: build-java-app-image
+      params:
+        - name: CONTEXT
+          value: .
+        - name: DOCKERFILE
+          value: src/main/docker/Dockerfile.jvm
+        - name: IMAGE
+          value: >-
+            image-registry.openshift-image-registry.svc:5000/quarkuscoffeeshop-cicd/quarkuscoffeeshop-inventory:$(params.IMAGE_TAG)
+        - name: TLSVERIFY
+          value: 'false'
+      runAfter:
+        - maven-run
+      taskRef:
+        kind: ClusterTask
+        name: buildah
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+    - name: tag-test-image
+      params:
+        - name: ARGS
+          value:
+            - tag
+            - 'quarkuscoffeeshop-inventory:$(params.IMAGE_TAG)'
+            - 'quarkuscoffeeshop-inventory:latest'
+      runAfter:
+        - build-java-app-image
+      taskRef:
+        kind: ClusterTask
+        name: openshift-client
+    - name: push-to-test-env
+      params:
+        - name: ARGS
+          value:
+            - patch
+            - deployment/quarkuscoffeeshop-inventory
+            - $(params.PATCH_IMAGE)
+            - '-n'
+            - quarkuscoffeeshop-demo
+      runAfter:
+        - tag-test-image
+      taskRef:
+        kind: ClusterTask
+        name: openshift-client
+    - name: push-quarkuscoffeeshop-inventory-image-to-quay
+      params:
+        - name: quay-io-repository
+          value: $(params.quay-io-repository)
+        - name: quay-io-image-tag-name
+          value: $(params.quay-io-image-tag-name)
+      resources:
+        inputs:
+          - name: image
+            resource: image
+      runAfter:
+        - push-to-test-env
+      taskRef:
+        kind: Task
+        name: push-quarkuscoffeeshop-inventory-image-to-quay
+    - name: send-to-webhook-slack
+      params:
+        - name: webhook-secret
+          value: $(params.webhook-secret)
+        - name: message
+          value: >-
+            Pipeline build pushed succesfully to 
+            $(params.quay-io-repository):$(params.quay-io-image-tag-name)
+      runAfter:
+        - push-quarkuscoffeeshop-inventory-image-to-quay
+      taskRef:
+        kind: Task
+        name: send-to-webhook-slack
+  workspaces:
+    - name: shared-workspace
+    - name: maven-settings

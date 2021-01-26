@@ -1,0 +1,11 @@
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineResource
+metadata:
+  name: homeoffice-ingress-image
+  labels:
+    app: homeoffice-ingress
+spec:
+  type: image
+  params:
+  - name: url
+    value: image-registry.openshift-image-registry.svc:5000/quarkuscoffeeshop-cicd/homeoffice-ingress
