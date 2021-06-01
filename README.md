@@ -131,3 +131,6 @@ YAML
 [quarkuscoffeeshop-web](quarkuscoffeeshop-web/README.md)
 
 
+## RHEL Edge Pipelines
+**quarkuscoffeeshop-majestic-monolith tekton pipline**   
+[quarkuscoffeeshop-majestic-monolith](quarkuscoffeeshop-majestic-monolith/README.md)
