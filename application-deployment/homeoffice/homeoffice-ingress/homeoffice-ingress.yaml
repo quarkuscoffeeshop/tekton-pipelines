@@ -55,6 +55,8 @@ spec:
     spec:
       containers:
       - env:
+        - name: KAFKA_BOOTSTRAP_URLS
+          value: 'cafe-cluster-kafka-bootstrap:9092'
         - name: POSTGRESQL_JDBC_URL
           value: jdbc:postgresql://coffeeshopdb:5432/coffeeshopdb?currentSchema=coffeeshop
         - name: POSTGRESQL_USER
