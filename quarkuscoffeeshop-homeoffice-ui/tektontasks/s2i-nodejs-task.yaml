@@ -1,37 +1,74 @@
-apiVersion: tekton.dev/v1alpha1
+apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
   name: s2i-nodejs
+  namespace: quarkuscoffeeshop-cicd
 spec:
-  inputs:
-    resources:
+  params:
+    - default: '14'
+      description: The version of the nodejs
+      name: VERSION
+      type: string
+    - default: 'http://homeoffice-backend/graphql'
+      description: The home office started endpoint
+      name: REACT_APP_GRAPHQL_ENDPOINT
+      type: string
+    - default: .
+      description: The location of the path to run s2i from.
+      name: PATH_CONTEXT
+      type: string
+    - default: 'true'
+      description: >-
+        Verify the TLS on the registry endpoint (for push/pull to a non-TLS
+        registry)
+      name: TLSVERIFY
+      type: string
+    - default: v1.0
+      description: image release tag
+      name: IMAGE_TAG
+      type: string
+  resources:
+    inputs:
       - name: source
         type: git
-    params:
-      - name: VERSION
-        description: The version of the nodejs
-        default: '14'
-      - name: PATH_CONTEXT
-        description: The location of the path to run s2i from.
-        default: .
-      - name: TLSVERIFY
-        description: Verify the TLS on the registry endpoint (for push/pull to a non-TLS registry)
-        default: "true"
-      - name: IMAGE_TAG
-        description: image release tag
-        default: 'v1.0'
-  outputs:
-    resources:
+    outputs:
       - name: image
         type: image
   steps:
-    - name: generate
+    - args:
+        - >-
+          echo
+          "REACT_APP_GRAPHQL_ENDPOINT=$(inputs.params.REACT_APP_GRAPHQL_ENDPOINT)"
+          > env-file
+
+          echo "Generated Env file"
+
+          echo "------------------------------"
+
+          cat env-file
+
+          echo "------------------------------"
+      command:
+        - /bin/sh
+        - '-c'
       image: quay.io/openshift-pipeline/s2i
-      workingdir: /workspace/source
-      command: ['s2i', 'build', '$(inputs.params.PATH_CONTEXT)', 'registry.access.redhat.com/ubi8/nodejs-$(inputs.params.VERSION)', '--as-dockerfile', '/gen-source/Dockerfile.gen']
+      name: gen-env-file
+      resources: {}
       volumeMounts:
-        - name: gen-source
-          mountPath: /gen-source
+        - mountPath: /env-params
+          name: envparams
+      workingDir: /env-params
+    - command:
+        - s2i
+        - build
+        - $(inputs.params.PATH_CONTEXT)
+        - registry.access.redhat.com/ubi8/nodejs-$(inputs.params.VERSION)
+        - '--as-dockerfile'
+        - /gen-source/Dockerfile.gen
+        - '--environment-file'
+        - /env-params/env-file
+      image: quay.io/openshift-pipeline/s2i
+      name: generate
       resources:
         limits:
           cpu: 500m
@@ -39,15 +76,24 @@ spec:
         requests:
           cpu: 500m
           memory: 1Gi
-    - name: build
-      image: quay.io/buildah/stable
-      workingdir: /gen-source
-      command: ['buildah', 'bud', '--tls-verify=$(inputs.params.TLSVERIFY)', '--layers', '-f', '/gen-source/Dockerfile.gen', '-t', '$(outputs.resources.image.url):$(inputs.params.IMAGE_TAG)', '.']
       volumeMounts:
-        - name: varlibcontainers
-          mountPath: /var/lib/containers
-        - name: gen-source
-          mountPath: /gen-source
+        - mountPath: /gen-source
+          name: gen-source
+        - mountPath: /env-params
+          name: envparams
+      workingDir: /workspace/source
+    - command:
+        - buildah
+        - bud
+        - '--tls-verify=$(inputs.params.TLSVERIFY)'
+        - '--layers'
+        - '-f'
+        - /gen-source/Dockerfile.gen
+        - '-t'
+        - '$(outputs.resources.image.url):$(inputs.params.IMAGE_TAG)'
+        - .
+      image: quay.io/buildah/stable
+      name: build
       resources:
         limits:
           cpu: 500m
@@ -57,12 +103,20 @@ spec:
           memory: 2Gi
       securityContext:
         privileged: true
-    - name: push
-      image: quay.io/buildah/stable
-      command: ['buildah', 'push', '--tls-verify=$(inputs.params.TLSVERIFY)', '$(outputs.resources.image.url):$(inputs.params.IMAGE_TAG)', 'docker://$(outputs.resources.image.url):$(inputs.params.IMAGE_TAG)']
       volumeMounts:
-        - name: varlibcontainers
-          mountPath: /var/lib/containers
+        - mountPath: /var/lib/containers
+          name: varlibcontainers
+        - mountPath: /gen-source
+          name: gen-source
+      workingDir: /gen-source
+    - command:
+        - buildah
+        - push
+        - '--tls-verify=$(inputs.params.TLSVERIFY)'
+        - '$(outputs.resources.image.url):$(inputs.params.IMAGE_TAG)'
+        - 'docker://$(outputs.resources.image.url):$(inputs.params.IMAGE_TAG)'
+      image: quay.io/buildah/stable
+      name: push
       resources:
         limits:
           cpu: 500m
@@ -72,8 +126,13 @@ spec:
           memory: 1Gi
       securityContext:
         privileged: true
+      volumeMounts:
+        - mountPath: /var/lib/containers
+          name: varlibcontainers
   volumes:
-    - name: varlibcontainers
-      emptyDir: {}
-    - name: gen-source
-      emptyDir: {}
+    - emptyDir: {}
+      name: varlibcontainers
+    - emptyDir: {}
+      name: gen-source
+    - emptyDir: {}
+      name: envparams

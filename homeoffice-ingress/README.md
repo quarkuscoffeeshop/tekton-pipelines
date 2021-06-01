@@ -40,6 +40,6 @@ oc policy add-role-to-group system:image-puller system:serviceaccounts:quarkusco
 oc adm policy add-role-to-user admin system:serviceaccount:quarkuscoffeeshop-cicd:pipeline -n quarkuscoffeeshop-homeoffice
 
 oc project quarkuscoffeeshop-homeoffice
-oc new-app quarkuscoffeeshop-cicd/homeoffice-ingress:5.0.0-SNAPSHOT -n quarkuscoffeeshop-homeoffice
+oc create -f  application-deployment/homeoffice/homeoffice-ingress/homeoffice-ingress.yaml  -n quarkuscoffeeshop-homeoffice
 oc expose service/homeoffice-ingress -n quarkuscoffeeshop-homeoffice
 ```

@@ -35,11 +35,12 @@ oc -n quarkuscoffeeshop-cicd create -f  ./homeoffice-backend/pipeline/deploy-pip
 
 ### Integration testing instructions 
 ```
+oc new-project quarkuscoffeeshop-homeoffice
 oc adm policy add-role-to-user admin system:serviceaccount:quarkuscoffeeshop-homeoffice:pipeline -n quarkuscoffeeshop-cicd
 oc policy add-role-to-group system:image-puller system:serviceaccounts:quarkuscoffeeshop-homeoffice -n quarkuscoffeeshop-cicd
 oc adm policy add-role-to-user admin system:serviceaccount:quarkuscoffeeshop-cicd:pipeline -n quarkuscoffeeshop-homeoffice
 
 oc project quarkuscoffeeshop-homeoffice
-oc new-app quarkuscoffeeshop-cicd/homeoffice-backend:latest -n quarkuscoffeeshop-homeoffice
+oc create -f application-deployment/homeoffice/homeoffice-backend/homeoffice-backend.yaml  -n quarkuscoffeeshop-homeoffice
 oc expose service/homeoffice-backend -n quarkuscoffeeshop-homeoffice
 ```

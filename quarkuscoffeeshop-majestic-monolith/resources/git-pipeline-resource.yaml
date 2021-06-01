@@ -1,0 +1,11 @@
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineResource
+metadata:
+  name: quarkuscoffeeshop-majestic-monolith-git
+  labels:
+    app: quarkuscoffeeshop-majestic-monolith
+spec:
+  type: git
+  params:
+  - name: url
+    value: https://github.com/jeremyrdavis/quarkuscoffeeshop-majestic-monolith

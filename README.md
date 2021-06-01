@@ -88,10 +88,21 @@ type: kubernetes.io/dockerconfigjson
 oc create -f quay-secret.yml --namespace=quarkuscoffeeshop-cicd
 ```
 
-**configure slack webhook**
+**configure slack webhook**  
+* [tekton hub](https://hub-preview.tekton.dev/) 
+* [Sending messages using Incoming Webhooks](https://api.slack.com/messaging/webhooks)
 ```
-oc create -f send-to-webhook-slack.yaml
-oc create -f webhook-secret.yaml
+# oc create -f event-notification/send-to-webhook-slack.yaml -n quarkuscoffeeshop-cicd
+# WEBHOOKURL=https://hooks.slack.com/services/xxxxx/Xxxxxx
+# cat >webhook-secret.yaml<<YAML
+kind: Secret
+apiVersion: v1
+metadata:
+  name: webhook-secret
+stringData:
+  url: ${WEBHOOKURL}
+YAML
+# oc create -f webhook-secret.yaml -n quarkuscoffeeshop-cicd
 ```
 
 ## HOME Office (Backoffice)
@@ -116,5 +127,7 @@ oc create -f webhook-secret.yaml
 [quarkuscoffeeshop-web](quarkuscoffeeshop-web/README.md)
 
 
+**quarkuscoffeeshop-homeoffice-ui tekton pipline**   
+[quarkuscoffeeshop-web](quarkuscoffeeshop-web/README.md)
 
 
