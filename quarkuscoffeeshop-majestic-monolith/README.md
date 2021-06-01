@@ -49,7 +49,7 @@ oc create -f application-deployment/store/quarkuscoffeeshop-majestic-monolith/qu
 oc expose svc/quarkuscoffeeshop-majestic-monolith    
 ```
 
-**Update Enviornment Variables in deployment**
+**Update Environment Variables in deployment**
 ```
 oc edit deployment.apps/quarkuscoffeeshop-majestic-monolith
 ```

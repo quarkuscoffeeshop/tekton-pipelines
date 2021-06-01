@@ -44,3 +44,9 @@ oc project quarkuscoffeeshop-homeoffice
 oc create -f  application-deployment/homeoffice/homeoffice-ingress/homeoffice-ingress.yaml  -n quarkuscoffeeshop-homeoffice
 oc expose service/homeoffice-ingress -n quarkuscoffeeshop-homeoffice
 ```
+
+
+**Update Environment Variables in deployment**
+```
+oc edit deployment.apps/homeoffice-ingress
+```

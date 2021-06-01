@@ -44,3 +44,8 @@ oc project quarkuscoffeeshop-homeoffice
 oc create -f application-deployment/homeoffice/homeoffice-backend/homeoffice-backend.yaml  -n quarkuscoffeeshop-homeoffice
 oc expose service/homeoffice-backend -n quarkuscoffeeshop-homeoffice
 ```
+
+**Update Environment Variables in deployment**
+```
+oc edit deployment.apps/homeoffice-backend 
+```
