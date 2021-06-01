@@ -44,7 +44,7 @@ kind: Subscription
 metadata:
   name: openshift-pipelines-operator-rh
 spec:
-  channel: ocp-4.6
+  channel: stable
   installPlanApproval: Automatic
   name: openshift-pipelines-operator-rh
   source: redhat-operators
@@ -53,12 +53,12 @@ EOF
 ```
 
 **Install tkn cli**  
-`on linux`
+`on linux AMD 64`
 ```
 # Get the tar.xz
-curl -LO https://github.com/tektoncd/cli/releases/download/v0.13.1/tkn_0.13.1_Linux_x86_64.tar.gz
+curl -LO https://github.com/tektoncd/cli/releases/download/v0.18.0/tkn_0.18.0_Linux_x86_64.tar.gz
 # Extract tkn to your PATH (e.g. /usr/local/bin)
-sudo tar xvzf tkn_0.13.1_Linux_x86_64.tar.gz -C /usr/local/bin/ tkn
+sudo tar xvzf tkn_0.18.0_Linux_x86_64.tar.gz -C /usr/local/bin/ tkn
 ```
 
 `on mac`
