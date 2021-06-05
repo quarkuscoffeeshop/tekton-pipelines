@@ -1,0 +1,28 @@
+---
+# /spec/template/spec/containers/0/env/9/value -> CORS_ORIGINS
+# /spec/template/spec/containers/0/env/10/value -> STORE_ID
+# /spec/template/spec/containers/0/env/11/value -> STREAM_URL
+# /spec/template/spec/containers/0/env/12/value -> REST_URL
+apiVersion: builtin
+kind: PatchTransformer
+metadata:
+  name: quarkuscoffeeshop-majestic-monolith
+target:
+  group: apps
+  version: v1
+  kind: Deployment
+  namespace: quarkuscoffeeshop-integration
+  name: quarkuscoffeeshop-majestic-monolith
+patch: |-
+  - op: replace
+    path: /spec/template/spec/containers/0/env/9/value
+    value: "http://CHANGEME"
+  - op: replace
+    path: /spec/template/spec/containers/0/env/10/value
+    value: "ATLANTA"
+  - op: replace
+    path: /spec/template/spec/containers/0/env/11/value
+    value: "http://CHANGEME/dashboard/stream"
+  - op: replace
+    path: /spec/template/spec/containers/0/env/12/value
+    value: "http://CHANGEME"

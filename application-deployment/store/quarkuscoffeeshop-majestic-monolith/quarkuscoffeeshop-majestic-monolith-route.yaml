@@ -1,0 +1,17 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  labels:
+    app: quarkuscoffeeshop-majestic-monolith
+    app.kubernetes.io/component: quarkuscoffeeshop-majestic-monolith
+    app.kubernetes.io/instance: quarkuscoffeeshop-majestic-monolith
+  name: monolith
+  namespace: quarkuscoffeeshop-integration
+spec:
+  port:
+    targetPort: 8080-tcp
+  to:
+    kind: Service
+    name: quarkuscoffeeshop-majestic-monolith
+    weight: 100
+  wildcardPolicy: None

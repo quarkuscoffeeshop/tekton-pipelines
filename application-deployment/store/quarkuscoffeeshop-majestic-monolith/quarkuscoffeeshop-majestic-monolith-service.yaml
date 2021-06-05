@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: quarkuscoffeeshop-majestic-monolith
+    app.kubernetes.io/component: quarkuscoffeeshop-majestic-monolith
+    app.kubernetes.io/instance: quarkuscoffeeshop-majestic-monolith
+  name: quarkuscoffeeshop-majestic-monolith
+  namespace: quarkuscoffeeshop-integration
+spec:
+  ports:
+  - name: 8080-tcp
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    deployment: quarkuscoffeeshop-majestic-monolith
+  sessionAffinity: None
+  type: ClusterIP

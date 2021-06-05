@@ -3,6 +3,7 @@
 
 ## Deploy pipelines using kustomize
 ---
+> You may fork this repo and make edit to the `application-deployment/homeoffice/homeoffice-ingress/transformer-patches.yaml` in for GitOps or argocd
 **Create Projects**
 ```
 oc new-project quarkuscoffeeshop-cicd
@@ -21,7 +22,6 @@ oc edit deployment.apps/homeoffice-ingress
 
 ## Configure webhooks
 ---
-
 **See triggerbinding-configs before going to next step**  
 * [triggerbinding-configs](../triggerbinding-configs)
 
@@ -91,7 +91,7 @@ oc policy add-role-to-group system:image-puller system:serviceaccounts:quarkusco
 oc adm policy add-role-to-user admin system:serviceaccount:quarkuscoffeeshop-cicd:pipeline -n quarkuscoffeeshop-homeoffice
 
 oc project quarkuscoffeeshop-homeoffice
-oc create -f  application-deployment/homeoffice/homeoffice-ingress/homeoffice-ingress.yaml  -n quarkuscoffeeshop-homeoffice
+oc create -f  application-deployment/homeoffice/homeoffice-ingress/ -n quarkuscoffeeshop-homeoffice
 oc expose service/homeoffice-ingress -n quarkuscoffeeshop-homeoffice
 ```
 
