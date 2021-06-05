@@ -1,17 +1,24 @@
-## quarkuscoffeeshop-majestic-monolith tekton pipeline
+# quarkuscoffeeshop-majestic-monolith tekton pipeline
 
-### Deploy pipelines using tekton
+## Deploy pipelines using kustomize
+---
+**Create Projects**
 ```
 oc new-project quarkuscoffeeshop-cicd
 oc new-project quarkuscoffeeshop-integration
 ```
-
+**Run the kustomize command to deploy pipelines** 
 ```
 kustomize build quarkuscoffeeshop-majestic-monolith | oc create -f - 
 ```
 
 
-### Deploy pipelines using tekton
+## Configure webhooks
+---
+
+## Deploy pipelines Manually 
+---
+
 **configure pvc**
 ```
 oc -n quarkuscoffeeshop-cicd create -f quarkuscoffeeshop-majestic-monolith/pvc/pvc.yml
