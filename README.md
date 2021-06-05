@@ -99,6 +99,9 @@ YAML
 **homeoffice-backend tekton pipline**  
 [homeoffice-backend](homeoffice-backend/README.md)
 
+**homeoffice-ingress tekton pipline**  
+[homeoffice-ingress](homeoffice-ingress/README.md)
+
 ## Store front microservices  
 
 **quarkuscoffeeshop-barista tekton pipline**  

@@ -66,6 +66,7 @@ oc -n quarkuscoffeeshop-cicd  get route homeoffice-ui-webhook -o jsonpath='https
 
 ### Integration testing instructions 
 ```
+oc new-project quarkuscoffeeshop-homeoffice
 oc adm policy add-role-to-user admin system:serviceaccount:quarkuscoffeeshop-homeoffice:pipeline -n quarkuscoffeeshop-cicd
 oc policy add-role-to-group system:image-puller system:serviceaccounts:quarkuscoffeeshop-homeoffice -n quarkuscoffeeshop-cicd
 oc adm policy add-role-to-user admin system:serviceaccount:quarkuscoffeeshop-cicd:pipeline -n quarkuscoffeeshop-homeoffice
@@ -74,3 +75,4 @@ oc project quarkuscoffeeshop-homeoffice
 oc new-app quarkuscoffeeshop-cicd/quarkuscoffeeshop-homeoffice-ui:latest -n quarkuscoffeeshop-homeoffice
 oc expose svc quarkuscoffeeshop-homeoffice-ui -n quarkuscoffeeshop-homeoffice
 ```
+

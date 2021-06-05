@@ -1,6 +1,17 @@
 ## quarkuscoffeeshop-majestic-monolith tekton pipeline
 
+### Deploy pipelines using tekton
+```
+oc new-project quarkuscoffeeshop-cicd
+oc new-project quarkuscoffeeshop-integration
+```
 
+```
+kustomize build quarkuscoffeeshop-majestic-monolith | oc create -f - 
+```
+
+
+### Deploy pipelines using tekton
 **configure pvc**
 ```
 oc -n quarkuscoffeeshop-cicd create -f quarkuscoffeeshop-majestic-monolith/pvc/pvc.yml
@@ -35,17 +46,17 @@ oc -n quarkuscoffeeshop-cicd create -f  ./quarkuscoffeeshop-majestic-monolith/pi
 ### Integration testing instructions 
 1. Configure permissions for project
 ```
-oc new-project quarkuscoffeeshop-rhel-edge
-oc adm policy add-role-to-user admin system:serviceaccount:quarkuscoffeeshop-rhel-edge:pipeline -n quarkuscoffeeshop-cicd
-oc policy add-role-to-group system:image-puller system:serviceaccounts:quarkuscoffeeshop-rhel-edge -n quarkuscoffeeshop-cicd
-oc adm policy add-role-to-user admin system:serviceaccount:quarkuscoffeeshop-cicd:pipeline -n quarkuscoffeeshop-rhel-edge
+oc new-project quarkuscoffeeshop-integration
+oc adm policy add-role-to-user admin system:serviceaccount:quarkuscoffeeshop-integration:pipeline -n quarkuscoffeeshop-cicd
+oc policy add-role-to-group system:image-puller system:serviceaccounts:quarkuscoffeeshop-integration -n quarkuscoffeeshop-cicd
+oc adm policy add-role-to-user admin system:serviceaccount:quarkuscoffeeshop-cicd:pipeline -n quarkuscoffeeshop-integration
 ```
 2. Run build pipeline 
 3. Run the below commands 
 
 ```
-oc project quarkuscoffeeshop-rhel-edge
-oc create -f application-deployment/store/quarkuscoffeeshop-majestic-monolith/quarkuscoffeeshop-majestic-monolith.yaml -n quarkuscoffeeshop-rhel-edge
+oc project quarkuscoffeeshop-integration
+oc create -f application-deployment/store/quarkuscoffeeshop-majestic-monolith/quarkuscoffeeshop-majestic-monolith.yaml -n quarkuscoffeeshop-integration
 oc expose svc/quarkuscoffeeshop-majestic-monolith    
 ```
 
