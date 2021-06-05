@@ -2,6 +2,7 @@ apiVersion: tekton.dev/v1alpha1
 kind: Task
 metadata:
   name: openshift-client
+  namespace: quarkuscoffeeshop-cicd
 spec:
   inputs:
     params:

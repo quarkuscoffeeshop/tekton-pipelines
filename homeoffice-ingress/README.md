@@ -2,6 +2,25 @@
 
 ![homeoffice-ingress](../images/homeoffice-ingress.png)
 
+### Deploy pipelines using tekton
+**Create Projects**
+```
+oc new-project quarkuscoffeeshop-cicd
+oc new-project quarkuscoffeeshop-homeoffice
+```
+
+**Run the kustomize command to deploy pipelines** 
+```
+kustomize build homeoffice-ingress | oc create -f - 
+```
+
+**Update Environment Variables in deployment**
+```
+oc edit deployment.apps/homeoffice-ingress
+```
+
+### Deploy pipelines Manually 
+
 **configure pvc**
 ```
 oc -n quarkuscoffeeshop-cicd create -f homeoffice-ingress/pvc/pvc.yml

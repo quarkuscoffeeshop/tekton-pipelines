@@ -8,6 +8,7 @@ metadata:
     tekton.dev/pipelines.minVersion: "0.12.1"
     tekton.dev/tags: git
     tekton.dev/displayName: "git clone"
+  namespace: quarkuscoffeeshop-cicd
 spec:
   description: >-
     These Tasks are Git tasks to work with repositories used by other tasks

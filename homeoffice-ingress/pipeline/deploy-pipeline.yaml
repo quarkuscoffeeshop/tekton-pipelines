@@ -4,6 +4,7 @@ metadata:
   name: build-and-push-homeoffice-ingress
   labels:
     app: homeoffice-ingress
+  namespace: quarkuscoffeeshop-cicd
 spec:
   params:
     - default: latest

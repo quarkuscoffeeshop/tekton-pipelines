@@ -7,6 +7,7 @@ metadata:
   annotations:
     tekton.dev/pipelines.minVersion: "0.12.1"
     tekton.dev/tags: build-tool
+  namespace: quarkuscoffeeshop-cicd
 spec:
   description: >-
     This Task can be used to run a Maven build.

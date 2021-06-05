@@ -4,6 +4,7 @@ metadata:
   name: homeoffice-ingress-git
   labels:
     app: homeoffice-ingress
+  namespace: quarkuscoffeeshop-cicd
 spec:
   type: git
   params:

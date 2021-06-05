@@ -1,0 +1,4 @@
+resources:
+- tasks/git-clone.yaml
+- tasks/maven.yaml
+- tasks/openshift-client-task.yaml

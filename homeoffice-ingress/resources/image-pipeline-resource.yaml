@@ -4,6 +4,7 @@ metadata:
   name: homeoffice-ingress-image
   labels:
     app: homeoffice-ingress
+  namespace: quarkuscoffeeshop-cicd
 spec:
   type: image
   params:
