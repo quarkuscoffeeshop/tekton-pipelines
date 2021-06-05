@@ -1,0 +1,15 @@
+---
+apiVersion: builtin
+kind: PatchTransformer
+metadata:
+  name: homeoffice-ingress
+target:
+  group: apps
+  version: v1
+  kind: Deployment
+  namespace: quarkuscoffeeshop-homeoffice
+  name: homeoffice-ingress
+patch: |-
+  - op: replace
+    path: /spec/template/spec/containers/0/env/3/value
+    value: "changepassword"

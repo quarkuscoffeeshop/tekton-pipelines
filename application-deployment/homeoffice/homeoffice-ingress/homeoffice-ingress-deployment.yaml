@@ -1,32 +1,7 @@
-  kind: Service
-  apiVersion: v1
-  metadata:
-    labels:
-      app: homeoffice-ingress
-      app.kubernetes.io/component: homeoffice-ingress
-      app.kubernetes.io/instance: homeoffice-ingress
-    name: homeoffice-ingress
-    namespace: quarkuscoffeeshop-homeoffice
-  spec:
-    ports:
-    - name: 8080-tcp
-      port: 8080
-      protocol: TCP
-      targetPort: 8080
-    selector:
-      deployment: homeoffice-ingress
-    sessionAffinity: None
-    type: ClusterIP
-  status:
-    loadBalancer: {}
 ---
-kind: Deployment
 apiVersion: apps/v1
+kind: Deployment
 metadata:
-  annotations:
-    deployment.kubernetes.io/revision: "6"
-    openshift.io/generated-by: OpenShiftNewApp
-  generation: 6
   labels:
     app: homeoffice-ingress
     app.kubernetes.io/component: homeoffice-ingress

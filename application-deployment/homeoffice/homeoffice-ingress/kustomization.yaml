@@ -1,2 +1,7 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
 resources:
-- homeoffice-ingress.yaml
+  - homeoffice-ingress-deployment.yaml
+  - homeoffice-ingress-service.yaml
+transformers:
+- ./transformer-patches.yaml
