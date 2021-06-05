@@ -2,7 +2,7 @@
 
 ![homeoffice-ingress](../images/homeoffice-ingress.png)
 
-### Deploy pipelines using tekton
+### Deploy pipelines using kustomize
 **Create Projects**
 ```
 oc new-project quarkuscoffeeshop-cicd
