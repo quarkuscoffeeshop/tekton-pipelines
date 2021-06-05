@@ -1,0 +1,94 @@
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerTemplate
+metadata:
+  name: homeoffice-ingress-build-triggertemplate
+spec:
+  params:
+    - name: gitrevision
+      description: The git revision
+      default: main
+    - name: gitrepositoryurl
+      description: The git repository url
+  resourcetemplates:
+    - apiVersion: tekton.dev/v1alpha1
+      kind: PipelineResource
+      metadata:
+        name: homeoffice-ingress-git-$(uid)
+      spec:
+        type: git
+        params:
+        - name: revision
+          value: $(params.gitrevision)
+        - name: url
+          value: $(params.gitrepositoryurl)
+        - name: sslVerify
+          value: "false"
+    - apiVersion: tekton.dev/v1alpha1
+      kind: PipelineRun
+      metadata:
+        name: build-and-push-homeoffice-ingress-$(uid)
+      spec:
+        pipelineRef:
+          name: build-and-push-homeoffice-ingress
+        serviceAccountName: pipeline
+        params:
+          - name: quay-io-account
+            value: 'takinosh'
+          - name: quay-io-repository
+            value: "quay.io/quarkuscoffeeshop/homeoffice-ingress"
+          - name: quay-io-image-tag-name
+            value: $(params.gitrevision)
+          - name: STORAGE_DRIVER
+            value: "Overlay"
+          - name: IMAGE_TAG
+            value: $(params.gitrevision)
+        resources:
+          - name: app-git
+            resourceRef:
+              name: reversewords-git-$(uid)
+          - name: image
+            type: image
+---
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerBinding
+metadata:
+  name: homeoffice-ui-github-triggerbinding
+spec:
+  params:
+  - name: git-repo-url
+    value: $(body.repository.url)
+  - name: git-repo-name
+    value: $(body.repository.name)
+  - name: git-revision
+    value: $(body.head_commit.id)
+---
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: Trigger
+metadata:
+  name: git-homeoffice-ingress-trigger
+spec:
+  serviceAccountName: pipeline
+  bindings:
+    - ref:  homeoffice-ui-github-triggerbinding
+  template:
+    ref: homeoffice-ingress-build-triggertemplate
+---
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: EventListener
+metadata:
+  name: homeoffice-ui-webhook
+spec:
+  serviceAccountName: pipelines
+  triggers:
+    - name: git-homeoffice-ingress-trigger
+      interceptors:
+        - github:
+            secretRef:
+              secretName: webhook-secret
+              secretKey: secret
+            eventTypes:
+              - push
+      bindings:
+        - ref: homeoffice-ui-github-triggerbinding
+      template:
+        name: homeoffice-ingress-build-triggertemplate
