@@ -4,6 +4,7 @@ metadata:
   name: build-and-push-quarkuscoffeeshop-majestic-monolith
   labels:
     app: quarkuscoffeeshop-majestic-monolith
+  namespace: quarkuscoffeeshop-cicd
 spec:
   params:
     - default: latest

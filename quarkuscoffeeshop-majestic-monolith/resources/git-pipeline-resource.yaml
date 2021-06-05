@@ -4,6 +4,7 @@ metadata:
   name: quarkuscoffeeshop-majestic-monolith-git
   labels:
     app: quarkuscoffeeshop-majestic-monolith
+  namespace: quarkuscoffeeshop-cicd
 spec:
   type: git
   params:

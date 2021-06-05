@@ -4,6 +4,7 @@ metadata:
   name: quarkuscoffeeshop-majestic-monolith-image
   labels:
     app: quarkuscoffeeshop-majestic-monolith
+  namespace: quarkuscoffeeshop-cicd
 spec:
   type: image
   params:
