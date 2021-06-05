@@ -1,8 +1,8 @@
-## homeoffice-ingress tekton pipeline
+# homeoffice-ingress tekton pipeline
 
 ![homeoffice-ingress](../images/homeoffice-ingress.png)
 
-### Deploy pipelines using kustomize
+## Deploy pipelines using kustomize
 **Create Projects**
 ```
 oc new-project quarkuscoffeeshop-cicd
@@ -19,7 +19,7 @@ kustomize build homeoffice-ingress | oc create -f -
 oc edit deployment.apps/homeoffice-ingress
 ```
 
-### Configure webhooks
+## Configure webhooks
 
 **See triggerbinding-configs before going to next step**
 [triggerbinding-configs](../triggerbinding-configs)
@@ -49,9 +49,7 @@ oc -n quarkuscoffeeshop-cicd create route edge homeoffice-ui-webhook --service=e
 oc -n quarkuscoffeeshop-cicd  get route homeoffice-ui-webhook -o jsonpath='https://{.spec.host}'
 ```
 
-
-
-### Deploy pipelines Manually 
+## Deploy pipelines Manually 
 
 **configure pvc**
 ```
