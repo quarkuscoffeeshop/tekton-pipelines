@@ -58,6 +58,11 @@ brew install tektoncd-cli
 oc new-project quarkuscoffeeshop-cicd
 ```
 
+**Set up quay permissions**
+```
+ oc  create -f sa/pipeline-sa.yaml 
+ ```
+
 **Set quay credentials**  
 ```
 $ cat quay-secret.yml

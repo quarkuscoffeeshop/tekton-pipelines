@@ -23,6 +23,32 @@ oc edit deployment.apps/quarkuscoffeeshop-majestic-monolith  -n quarkuscoffeesho
 
 ## Configure webhooks
 ---
+**See triggerbinding-configs before going to next step**  
+* [triggerbinding-configs](../triggerbinding-configs)
+
+Create Webhook for quarkuscoffeeshop-majestic-monolith
+```
+oc -n quarkuscoffeeshop-cicd create -f  ./quarkuscoffeeshop-majestic-monolith/webhook.yaml
+```
+
+Create quarkuscoffeeshop-majestic-monolith Webhook
+```
+oc -n quarkuscoffeeshop-cicd create route edge monolith-webhook --service=el-quarkuscoffeeshop-majestic-monolith-webhook --port=8080 --insecure-policy=Redirect
+```
+
+> **NOTE**: Every Git server has its own properties, but basically you want to provide the ingress url for our webhook and when the Git server should send the hook. E.g: push events, PR events, etc.
+
+1. Go to your application repository on GitHub, eg: https://github.com/jeremyrdavis/quarkuscoffeeshop-majestic-monolith
+2. Click on `Settings` -> `Webhooks`
+3. Create the following `Hook`
+   1. `Payload URL`: Output of command `oc -n quarkuscoffeeshop-cicd  get route monolith-webhook -o jsonpath='https://{.spec.host}'`
+   2. `Content type`: application/json
+   2. `Secret`: v3r1s3cur3 `cat saved-secert.txt`
+   3. `Events`: Check **Push Events**, leave others blank
+   4. `Active`: Check it
+   5. `SSL verification`: Check  **Disable**
+   6. Click on `Add webhook`
+
 
 ## Deploy pipelines Manually 
 ---

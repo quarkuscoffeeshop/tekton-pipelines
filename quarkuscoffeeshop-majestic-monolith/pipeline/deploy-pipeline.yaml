@@ -96,6 +96,20 @@ spec:
       taskRef:
         kind: ClusterTask
         name: openshift-client
+    - name: push-to-test-env
+      params:
+        - name: ARGS
+          value:
+            - patch
+            - deployment/quarkuscoffeeshop-majestic-monolith
+            - $(params.PATCH_IMAGE)
+            - '-n'
+            - quarkuscoffeeshop-integration
+      runAfter:
+        - tag-test-image
+      taskRef:
+        kind: ClusterTask
+        name: openshift-client
     - name: push-quarkuscoffeeshop-majestic-monolith-image-to-quay
       params:
         - name: quay-io-repository
@@ -107,7 +121,7 @@ spec:
           - name: image
             resource: image
       runAfter:
-        - tag-test-image
+        - push-to-test-env
       taskRef:
         kind: Task
         name: push-quarkuscoffeeshop-majestic-monolith-image-to-quay

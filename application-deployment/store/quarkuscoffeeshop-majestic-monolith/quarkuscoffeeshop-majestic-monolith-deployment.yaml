@@ -29,19 +29,19 @@ spec:
         - name: PGSQL_URL
           value: jdbc:postgresql://coffeeshopdb:5432/coffeeshopdb?currentSchema=coffeeshop
         - name: PGSQL_USER
-          value: coffeeshopuser
+          value: coffeshopadmin
         - name: PGSQL_PASSWORD
           value: redhat-21
         - name: PGSQL_URL_BARISTA
           value: jdbc:postgresql://coffeeshopdb:5432/coffeeshopdb?currentSchema=coffeeshop
         - name: PGSQL_USER_BARISTA
-          value: coffeeshopuser
+          value: coffeshopadmin
         - name: PGSQL_PASSWORD_BARISTA
           value: redhat-21
         - name: PGSQL_URL_KITCHEN
           value: jdbc:postgresql://coffeeshopdb:5432/coffeeshopdb?currentSchema=coffeeshop
         - name: PGSQL_USER_KITCHEN
-          value: coffeeshopuser
+          value: coffeshopadmin
         - name: PGSQL_PASSWORD_KITCHEN
           value: redhat-21
         - name: CORS_ORIGINS
