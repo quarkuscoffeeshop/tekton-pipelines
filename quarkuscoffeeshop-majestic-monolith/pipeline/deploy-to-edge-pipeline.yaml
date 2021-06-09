@@ -1,7 +1,7 @@
 apiVersion: tekton.dev/v1alpha1
 kind: Pipeline
 metadata:
-  name: build-and-push-quarkuscoffeeshop-majestic-monolith
+  name: build-and-push-to-edge
   labels:
     app: quarkuscoffeeshop-majestic-monolith
   namespace: quarkuscoffeeshop-cicd
@@ -25,6 +25,26 @@ spec:
         --patch={"spec":{"template":{"spec":{"containers":[{"name":"quarkuscoffeeshop-majestic-monolith","image":"image-registry.openshift-image-registry.svc:5000/quarkuscoffeeshop-cicd/quarkuscoffeeshop-majestic-monolith:$(params.IMAGE_TAG)"}]}}}}
       description: patch image
       name: PATCH_IMAGE
+      type: string
+    - default: 192.168.1.10
+      description: Ansible Tower Instance
+      name: tower_host
+      type: string
+    - default: 10.0.1.20
+      description:  Target Edge Device
+      name: target_edge_device
+      type: string
+    - default: "25"
+      description:  Ansible Tower Job Template Default is `Update quarkuscoffeeshop-majestic-monolith Application` the number is found in the URL
+      name: tower_job_template
+      type: string
+    - default: "1"
+      description:  Ansible Tower Inventory number is  found in url 
+      name: tower_inventory
+      type: string
+    - default: "1"
+      description:  Ansible Tower Credential number is  found in url 
+      name: tower_credential
       type: string
   resources:
     - name: app-git
@@ -153,6 +173,31 @@ spec:
       taskRef:
         kind: Task
         name: send-to-webhook-slack
+    - name: deploy-application-to-edge
+      taskRef:
+        name: ansible-tower-cli
+      params:
+      - name: SSLVERIFY
+        value: "false"
+      - name: HOST
+        value: $(params.tower_host)
+      - name: tower-secret
+        value: "tower-creds"
+      - name: ARGS
+        value:
+          - job
+          - launch
+          - "--job-template"
+          - "$(params.tower_job_template)"
+          - "--extra-vars"
+          - 'external_endpoint=$(params.target_edge_device)'
+          - "--inventory"
+          - "$(params.tower_inventory)"
+          - --credential
+          - "$(params.tower_credential)"
+          - "--monitor"
+      runAfter:
+        - send-to-webhook-slack
   workspaces:
     - name: shared-workspace
     - name: maven-settings

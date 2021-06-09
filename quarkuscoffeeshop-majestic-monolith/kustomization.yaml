@@ -10,6 +10,7 @@ resources:
   - pvc/pvc.yml
   - pvc/maven-source-pvc.yml
   - tektontasks/pushImageToQuay.yaml
+  - tektontasks/pushImageToQuay-latest.yaml
   - resources/git-pipeline-resource.yaml
   - resources/image-pipeline-resource.yaml
   - pipeline/deploy-pipeline.yaml

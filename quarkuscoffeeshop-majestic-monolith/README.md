@@ -1,5 +1,7 @@
 # quarkuscoffeeshop-majestic-monolith tekton pipeline
 
+![deploy-to-edge-pipeline](../images/deploy-to-edge-pipeline.png)
+
 ## Deploy pipelines using kustomize
 > You may fork this repo and make edit to the `application-deployment/store/quarkuscoffeeshop-majestic-monolith/transformer-patches.yaml` in for GitOps or argocd
 ---
@@ -19,6 +21,10 @@ kustomize build quarkuscoffeeshop-majestic-monolith | oc create -f -
 **Update Environment Variables in deployment**
 ```
 oc edit deployment.apps/quarkuscoffeeshop-majestic-monolith  -n quarkuscoffeeshop-integration
+```
+**Run the command below to enable to Anisble Tower Pipeline**
+```
+ oc create -f quarkuscoffeeshop-majestic-monolith/pipeline/deploy-to-edge-pipeline.yaml 
 ```
 
 ## Configure webhooks

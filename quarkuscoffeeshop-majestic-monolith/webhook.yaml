@@ -1,0 +1,94 @@
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerTemplate
+metadata:
+  name: quarkuscoffeeshop-majestic-monolith-build-triggertemplate
+spec:
+  params:
+    - name: gitrevision
+      description: The git revision
+      default: main
+    - name: gitrepositoryurl
+      description: The git repository url
+  resourcetemplates:
+    - apiVersion: tekton.dev/v1alpha1
+      kind: PipelineResource
+      metadata:
+        name: quarkuscoffeeshop-majestic-monolith-git-$(uid)
+      spec:
+        type: git
+        params:
+        - name: revision
+          value: $(params.gitrevision)
+        - name: url
+          value: $(params.gitrepositoryurl)
+        - name: sslVerify
+          value: "false"
+    - apiVersion: tekton.dev/v1alpha1
+      kind: PipelineRun
+      metadata:
+        name: build-and-push-quarkuscoffeeshop-majestic-monolith-$(uid)
+      spec:
+        pipelineRef:
+          name: build-and-push-quarkuscoffeeshop-majestic-monolith
+        serviceAccountName: pipeline
+        params:
+          - name: quay-io-account
+            value: 'takinosh'
+          - name: quay-io-repository
+            value: "quay.io/quarkuscoffeeshop/quarkuscoffeeshop-majestic-monolith"
+          - name: quay-io-image-tag-name
+            value: $(params.gitrevision)
+          - name: STORAGE_DRIVER
+            value: "Overlay"
+          - name: IMAGE_TAG
+            value: $(params.gitrevision)
+        resources:
+          - name: app-git
+            resourceRef:
+              name: reversewords-git-$(uid)
+          - name: image
+            type: image
+---
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerBinding
+metadata:
+  name: quarkuscoffeeshop-majestic-monolith-github-triggerbinding
+spec:
+  params:
+  - name: git-repo-url
+    value: $(body.repository.url)
+  - name: git-repo-name
+    value: $(body.repository.name)
+  - name: git-revision
+    value: $(body.head_commit.id)
+---
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: Trigger
+metadata:
+  name: git-quarkuscoffeeshop-majestic-monolith-trigger
+spec:
+  serviceAccountName: pipeline
+  bindings:
+    - ref:  quarkuscoffeeshop-majestic-monolith-github-triggerbinding
+  template:
+    ref: quarkuscoffeeshop-majestic-monolith-build-triggertemplate
+---
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: EventListener
+metadata:
+  name: quarkuscoffeeshop-majestic-monolith-webhook
+spec:
+  serviceAccountName: pipelines
+  triggers:
+    - name: git-quarkuscoffeeshop-majestic-monolith-trigger
+      interceptors:
+        - github:
+            secretRef:
+              secretName: webhook-secret
+              secretKey: secret
+            eventTypes:
+              - push
+      bindings:
+        - ref: quarkuscoffeeshop-majestic-monolith-github-triggerbinding
+      template:
+        name: quarkuscoffeeshop-majestic-monolith-build-triggertemplate
