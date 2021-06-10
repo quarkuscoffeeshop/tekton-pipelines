@@ -95,4 +95,4 @@ spec:
         secretName: quay-auth-secret
     - name: pipeline-cache
       persistentVolumeClaim:
-        claimName: quarkuscoffeeshop-customermocker-pipeline-task-cache-pvc
+        claimName: quarkuscoffeeshop-customermocker-shared-workspace-pvc
