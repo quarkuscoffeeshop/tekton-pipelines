@@ -23,8 +23,12 @@ spec:
       type: string
     - default: >-
         --patch={"spec":{"template":{"spec":{"containers":[{"name":"quarkuscoffeeshop-customermocker","image":"image-registry.openshift-image-registry.svc:5000/quarkuscoffeeshop-cicd/quarkuscoffeeshop-customermocker:CHANGEME_TO_TAG"}]}}}}
-      description: patch image
+      description: CHANGEME_TO_TAG at the end of the string above
       name: PATCH_IMAGE
+      type: string
+    - default: quarkuscoffeeshop-demo
+      description: Target Project
+      name: target_project
       type: string
   resources:
     - name: app-git
@@ -104,7 +108,7 @@ spec:
             - deployment/quarkuscoffeeshop-customermocker
             - $(params.PATCH_IMAGE)
             - '-n'
-            - quarkuscoffeeshop-demo
+            - $(params.target_project)
       runAfter:
         - tag-test-image
       taskRef:
