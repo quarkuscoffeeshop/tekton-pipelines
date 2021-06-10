@@ -4,5 +4,6 @@ namespace: quarkuscoffeeshop-demo
 resources:
   - quarkuscoffeeshop-customermocker-deployment.yaml
   - quarkuscoffeeshop-customermocker-service.yaml
+  - quarkuscoffeeshop-customermocker-route.yaml
 transformers:
 - ./transformer-patches.yaml

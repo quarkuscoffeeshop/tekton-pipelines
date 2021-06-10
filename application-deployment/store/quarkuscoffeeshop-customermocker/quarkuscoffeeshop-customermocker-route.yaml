@@ -1,0 +1,15 @@
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: quarkuscoffeeshop-customermocker
+  namespace: quarkuscoffeeshop-demo
+  labels:
+    app: quarkuscoffeeshop-customermocker
+spec:
+  to:
+    kind: Service
+    name: quarkuscoffeeshop-customermocker
+    weight: 100
+  port:
+    targetPort: 8080-tcp
+  wildcardPolicy: None
