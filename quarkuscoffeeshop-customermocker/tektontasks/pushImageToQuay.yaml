@@ -2,6 +2,7 @@ apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
   name: push-quarkuscoffeeshop-customermocker-image-to-quay
+  namespace: quarkuscoffeeshop-cicd
 spec:
   resources:
     inputs:

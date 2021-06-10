@@ -14,6 +14,9 @@ spec:
     - default: quay.io/quarkuscoffeeshop/quarkuscoffeeshop-majestic-monolith
       name: quay-io-repository
       type: string
+    - default: main
+      description: Select Branch 
+      name: branch_name
     - default: latest
       name: quay-io-image-tag-name
       type: string
@@ -40,6 +43,8 @@ spec:
           value: ''
         - name: deleteExisting
           value: 'true'
+        - name: revision
+          value: $(params.branch_name)
       taskRef:
         kind: Task
         name: git-clone

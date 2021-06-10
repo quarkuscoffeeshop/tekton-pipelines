@@ -4,6 +4,7 @@ metadata:
   name: quarkuscoffeeshop-customermocker-git
   labels:
     app: quarkuscoffeeshop-customermocker
+  namespace: quarkuscoffeeshop-cicd
 spec:
   type: git
   params:

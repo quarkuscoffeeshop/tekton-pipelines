@@ -4,6 +4,7 @@ metadata:
   name: quarkuscoffeeshop-customermocker-image
   labels:
     app: quarkuscoffeeshop-customermocker
+  namespace: quarkuscoffeeshop-cicd
 spec:
   type: image
   params:

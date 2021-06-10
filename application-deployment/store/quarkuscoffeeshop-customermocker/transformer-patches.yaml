@@ -1,0 +1,19 @@
+---
+# /spec/template/spec/containers/0/env/9/value -> CORS_ORIGINS
+# /spec/template/spec/containers/0/env/10/value -> STORE_ID
+# /spec/template/spec/containers/0/env/11/value -> STREAM_URL
+# /spec/template/spec/containers/0/env/12/value -> REST_URL
+apiVersion: builtin
+kind: PatchTransformer
+metadata:
+  name: quarkuscoffeeshop-customermocker
+target:
+  group: apps
+  version: v1
+  kind: Deployment
+  namespace: quarkuscoffeeshop-demo
+  name: quarkuscoffeeshop-customermocker
+patch: |-
+  - op: replace
+    path: /spec/template/spec/containers/0/env/0/value
+    value: "http://CHANGEME"

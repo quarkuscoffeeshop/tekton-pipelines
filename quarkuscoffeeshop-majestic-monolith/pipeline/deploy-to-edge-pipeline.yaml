@@ -11,6 +11,10 @@ spec:
       description: Image Tag Value
       name: IMAGE_TAG
       type: string
+    - default: main
+      description: Select Branch 
+      name: branch_name
+      type: string
     - default: quay.io/quarkuscoffeeshop/quarkuscoffeeshop-majestic-monolith
       name: quay-io-repository
       type: string
@@ -60,6 +64,8 @@ spec:
           value: ''
         - name: deleteExisting
           value: 'true'
+        - name: revision
+          value: $(params.branch_name)
       taskRef:
         kind: Task
         name: git-clone
