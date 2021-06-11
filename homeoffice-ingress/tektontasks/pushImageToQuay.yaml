@@ -95,5 +95,5 @@ spec:
         secretName: quay-auth-secret
     - name: pipeline-cache
       persistentVolumeClaim:
-        claimName: homeoffice-ingress-pipeline-task-cache-pvc
+        claimName: homeoffice-ingress-shared-workspace-pvc
 

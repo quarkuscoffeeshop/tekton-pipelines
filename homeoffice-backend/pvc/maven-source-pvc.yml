@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: maven-source-pvc
+  name: homeoffice-backend-maven-settings-pvc
   namespace: quarkuscoffeeshop-cicd
 spec:
   accessModes:

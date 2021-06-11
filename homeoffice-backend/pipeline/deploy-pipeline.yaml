@@ -4,6 +4,7 @@ metadata:
   name: build-and-push-homeoffice-backend
   labels:
     app: homeoffice-backend
+  namespace: quarkuscoffeeshop-cicd
 spec:
   params:
     - default: latest
@@ -21,8 +22,8 @@ spec:
       name: webhook-secret
       type: string
     - default: >-
-        --patch={"spec":{"template":{"spec":{"containers":[{"name":"homeoffice-backend","image":"image-registry.openshift-image-registry.svc:5000/quarkuscoffeeshop-cicd/homeoffice-backend:$(params.IMAGE_TAG)"}]}}}}
-      description: patch image
+        --patch={"spec":{"template":{"spec":{"containers":[{"name":"homeoffice-backend","image":"image-registry.openshift-image-registry.svc:5000/quarkuscoffeeshop-cicd/homeoffice-backend:CHANGEME_TO_TAG"}]}}}}
+      description:  CHANGEME_TO_TAG at the end of the string above
       name: PATCH_IMAGE
       type: string
   resources:

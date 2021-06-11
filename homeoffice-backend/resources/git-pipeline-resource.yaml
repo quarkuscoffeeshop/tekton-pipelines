@@ -4,6 +4,7 @@ metadata:
   name: homeoffice-backend-git
   labels:
     app: homeoffice-backend
+  namespace: quarkuscoffeeshop-cicd
 spec:
   type: git
   params:

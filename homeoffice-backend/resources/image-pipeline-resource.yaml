@@ -4,6 +4,7 @@ metadata:
   name: homeoffice-backend-image
   labels:
     app: homeoffice-backend
+  namespace: quarkuscoffeeshop-cicd
 spec:
   type: image
   params:

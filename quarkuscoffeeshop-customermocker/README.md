@@ -70,12 +70,26 @@ oc -n quarkuscoffeeshop-cicd create -f  ./quarkuscoffeeshop-customermocker/pipel
 
 
 ### Integration testing instructions 
-```
-oc adm policy add-role-to-user admin system:serviceaccount:quarkuscoffeeshop-demo:pipeline -n quarkuscoffeeshop-cicd
-oc policy add-role-to-group system:image-puller system:serviceaccounts:quarkuscoffeeshop-demo -n quarkuscoffeeshop-cicd
-oc adm policy add-role-to-user admin system:serviceaccount:quarkuscoffeeshop-cicd:pipeline -n quarkuscoffeeshop-demo
 
+**Set target project**
+```
+export TARGET_PROJECT=quarkuscoffeeshop-demo
+or 
+export TARGET_PROJECT=quarkuscoffeeshop-integration
+```
+
+**Create Projects and configure permissions**
+```
+oc new-project quarkuscoffeeshop-cicd
+oc new-project ${TARGET_PROJECT}
+oc adm policy add-role-to-user admin system:serviceaccount:${TARGET_PROJECT}:pipeline -n quarkuscoffeeshop-cicd
+oc policy add-role-to-group system:image-puller system:serviceaccounts:${TARGET_PROJECT} -n quarkuscoffeeshop-cicd
+oc adm policy add-role-to-user admin system:serviceaccount:quarkuscoffeeshop-cicd:pipeline -n ${TARGET_PROJECT}
+```
+
+**Deploy application**
+```
 oc project quarkuscoffeeshop-demo
-oc new-app quarkuscoffeeshop-cicd/quarkuscoffeeshop-customermocker:latest -n quarkuscoffeeshop-demo
+oc create -f application-deployment/store/quarkuscoffeeshop-customermocker/ -n quarkuscoffeeshop-demo
 oc expose service/quarkuscoffeeshop-customermocker -n quarkuscoffeeshop-demo
 ```

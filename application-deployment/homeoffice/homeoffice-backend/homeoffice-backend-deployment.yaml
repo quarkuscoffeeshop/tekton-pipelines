@@ -1,21 +1,3 @@
-kind: Service
-apiVersion: v1
-metadata:
-  labels:
-    app: homeoffice-backend
-    app.kubernetes.io/component: homeoffice-backend
-  name: homeoffice-backend
-  namespace: quarkuscoffeeshop-homeoffice
-spec:
-  ports:
-  - name: 8080-tcp
-    port: 8080
-    protocol: TCP
-    targetPort: 8080
-  selector:
-    deployment: homeoffice-backend
-  sessionAffinity: None
-  type: ClusterIP
 ---
 kind: Deployment
 apiVersion: apps/v1
@@ -51,6 +33,8 @@ spec:
     spec:
       containers:
       - env:
+        - name: KAFKA_BOOTSTRAP_URLS
+          value: 'cafe-cluster-kafka-bootstrap:9092'
         - name: POSTGRESQL_JDBC_URL
           value: jdbc:postgresql://coffeeshopdb:5432/coffeeshopdb?currentSchema=coffeeshop
         - name: POSTGRESQL_USER

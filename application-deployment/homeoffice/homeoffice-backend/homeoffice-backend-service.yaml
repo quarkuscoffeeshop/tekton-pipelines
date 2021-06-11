@@ -1,0 +1,18 @@
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    app: homeoffice-backend
+    app.kubernetes.io/component: homeoffice-backend
+  name: homeoffice-backend
+  namespace: quarkuscoffeeshop-homeoffice
+spec:
+  ports:
+  - name: 8080-tcp
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    deployment: homeoffice-backend
+  sessionAffinity: None
+  type: ClusterIP

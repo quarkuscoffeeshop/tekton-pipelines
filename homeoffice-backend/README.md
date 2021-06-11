@@ -3,6 +3,30 @@
 
 ![homeoffice-backend-pipeline](../images/homeoffice-backend-pipeline.png)
 
+## Deploy pipelines using kustomize
+---
+> You may fork this repo and make edit to the `application-deployment/homeoffice/homeoffice-backend/transformer-patches.yaml` in for GitOps or argocd
+**Create Projects**
+```
+oc new-project quarkuscoffeeshop-cicd
+oc new-project quarkuscoffeeshop-homeoffice
+oc adm policy add-role-to-user admin system:serviceaccount:quarkuscoffeeshop-homeoffice:pipeline -n quarkuscoffeeshop-cicd
+oc policy add-role-to-group system:image-puller system:serviceaccounts:quarkuscoffeeshop-homeoffice -n quarkuscoffeeshop-cicd
+oc adm policy add-role-to-user admin system:serviceaccount:quarkuscoffeeshop-cicd:pipeline -n quarkuscoffeeshop-homeoffice
+```
+
+**Run the kustomize command to deploy pipelines** 
+```
+kustomize build homeoffice-backend | oc create -f - 
+```
+
+**Update Environment Variables in deployment**
+```
+oc edit deployment.apps/homeoffice-backend
+```
+
+## Deploy pipelines Manually 
+---
 **configure pvc**
 ```
 oc -n quarkuscoffeeshop-cicd create -f homeoffice-backend/pvc/pvc.yml
@@ -34,14 +58,18 @@ oc -n quarkuscoffeeshop-cicd create -f  ./homeoffice-backend/pipeline/deploy-pip
 
 
 ### Integration testing instructions 
+**Create Projects**
 ```
+oc new-project quarkuscoffeeshop-cicd
 oc new-project quarkuscoffeeshop-homeoffice
 oc adm policy add-role-to-user admin system:serviceaccount:quarkuscoffeeshop-homeoffice:pipeline -n quarkuscoffeeshop-cicd
 oc policy add-role-to-group system:image-puller system:serviceaccounts:quarkuscoffeeshop-homeoffice -n quarkuscoffeeshop-cicd
 oc adm policy add-role-to-user admin system:serviceaccount:quarkuscoffeeshop-cicd:pipeline -n quarkuscoffeeshop-homeoffice
+```
 
-oc project quarkuscoffeeshop-homeoffice
-oc create -f application-deployment/homeoffice/homeoffice-backend/homeoffice-backend.yaml  -n quarkuscoffeeshop-homeoffice
+**Deploy Application**
+```
+oc create -f application-deployment/homeoffice/homeoffice-backend/ -n quarkuscoffeeshop-homeoffice
 oc expose service/homeoffice-backend -n quarkuscoffeeshop-homeoffice
 ```
 

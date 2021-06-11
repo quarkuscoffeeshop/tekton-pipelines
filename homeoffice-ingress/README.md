@@ -8,6 +8,9 @@
 ```
 oc new-project quarkuscoffeeshop-cicd
 oc new-project quarkuscoffeeshop-homeoffice
+oc adm policy add-role-to-user admin system:serviceaccount:quarkuscoffeeshop-homeoffice:pipeline -n quarkuscoffeeshop-cicd
+oc policy add-role-to-group system:image-puller system:serviceaccounts:quarkuscoffeeshop-homeoffice -n quarkuscoffeeshop-cicd
+oc adm policy add-role-to-user admin system:serviceaccount:quarkuscoffeeshop-cicd:pipeline -n quarkuscoffeeshop-homeoffice
 ```
 
 **Run the kustomize command to deploy pipelines** 

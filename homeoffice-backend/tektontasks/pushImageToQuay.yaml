@@ -2,6 +2,7 @@ apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
   name: push-homeoffice-backend-image-to-quay
+  namespace: quarkuscoffeeshop-cicd
 spec:
   resources:
     inputs:
@@ -94,4 +95,4 @@ spec:
         secretName: quay-auth-secret
     - name: pipeline-cache
       persistentVolumeClaim:
-        claimName: pipeline-task-cache-pvc
+        claimName: homeoffice-backend-shared-workspace-pvc
