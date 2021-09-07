@@ -11,6 +11,12 @@ spec:
       description: Image Tag Value
       name: IMAGE_TAG
       type: string
+    - default: quay-auth-secret
+      description: >-
+        The quay.io account that matches the credentials stored in the mounted
+        secret.
+      name: quay-io-account
+      type: string
     - default: quay.io/quarkuscoffeeshop/homeoffice-ingress
       name: quay-io-repository
       type: string
@@ -20,11 +26,6 @@ spec:
     - default: webhook-secret
       description: Webhook secret name
       name: webhook-secret
-      type: string
-    - default: >-
-        --patch={"spec":{"template":{"spec":{"containers":[{"name":"homeoffice-ingress","image":"image-registry.openshift-image-registry.svc:5000/quarkuscoffeeshop-cicd/homeoffice-ingress:$(params.IMAGE_TAG)"}]}}}}
-      description: patch image
-      name: PATCH_IMAGE
       type: string
   resources:
     - name: app-git
@@ -86,11 +87,9 @@ spec:
           workspace: shared-workspace
     - name: tag-test-image
       params:
-        - name: ARGS
-          value:
-            - tag
-            - 'homeoffice-ingress:$(params.IMAGE_TAG)'
-            - 'homeoffice-ingress:latest'
+        - name: SCRIPT
+          value: |
+            oc tag homeoffice-ingress:$(params.IMAGE_TAG) homeoffice-ingress:latest
       runAfter:
         - build-java-app-image
       taskRef:
@@ -98,13 +97,9 @@ spec:
         name: openshift-client
     - name: push-to-test-env
       params:
-        - name: ARGS
-          value:
-            - patch
-            - deployment/homeoffice-ingress
-            - $(params.PATCH_IMAGE)
-            - '-n'
-            - quarkuscoffeeshop-homeoffice
+        - name: SCRIPT
+          value: |
+            oc patch deployment/homeoffice-ingress  --patch='{"spec":{"template":{"spec":{"containers":[{"name":"homeoffice-ingress","image":"image-registry.openshift-image-registry.svc:5000/quarkuscoffeeshop-cicd/homeoffice-ingress:'$(params.IMAGE_TAG)'"}]}}}}' -n quarkuscoffeeshop-homeoffice
       runAfter:
         - tag-test-image
       taskRef:
