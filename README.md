@@ -1,3 +1,6 @@
+# Docs
+Please see the Github Pages Site for complete documentation: [quarkuscoffeeshop.github.io](https://quarkuscoffeeshop.github.io)
+
 # quarkuscoffeeshop Tekton pipelines Guide
 
 ### Requirements 
@@ -64,7 +67,7 @@ oc  create -f sa/pipeline-sa.yaml
 ```
 **Set privileged containers for the pushImageroQuay task OCP 4.7.x**
 ```
-oc adm policy add-scc-to-user privileged -z default -n  quarkuscoffeeshop-cicd
+oc adm policy add-scc-to-user privileged -z pipeline -n  quarkuscoffeeshop-cicd
 ```
 
 **Set quay credentials**  
