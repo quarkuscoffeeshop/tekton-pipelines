@@ -10,7 +10,7 @@ spec:
       name: quay-io-account
       type: string
     - default: >-
-        http://homeoffice-backend-quarkuscoffeeshop-homeoffice.apps.shop.example.com/graphql
+        http://quarkuscoffeeshop-homeoffice-ui-quarkuscoffeeshop-homeoffice.apps.shop.example.com/graphql
       description: The home office backend endpoint
       name: REACT_APP_GRAPHQL_ENDPOINT
       type: string
@@ -59,25 +59,14 @@ spec:
         name: s2i-nodejs
     - name: tag-test-image
       params:
-        - name: ARGS
-          value:
-            - tag
-            - 'quarkuscoffeeshop-homeoffice-ui:$(params.IMAGE_TAG)'
-            - 'quarkuscoffeeshop-homeoffice-ui:latest'
-      runAfter:
-        - build
-      taskRef:
-        kind: ClusterTask
-        name: openshift-client
+        - name: SCRIPT
+          value: |
+            oc tag quarkuscoffeeshop-homeoffice-ui:$(params.IMAGE_TAG) quarkuscoffeeshop-homeoffice-ui:latest
     - name: push-to-test-env
       params:
-        - name: ARGS
-          value:
-            - patch
-            - deployment/quarkuscoffeeshop-homeoffice-ui
-            - $(params.PATCH_IMAGE)
-            - '-n'
-            - quarkuscoffeeshop-homeoffice
+        - name: SCRIPT
+          value: |
+            oc patch deployment/quarkuscoffeeshop-homeoffice-ui  --patch='{"spec":{"template":{"spec":{"containers":[{"name":"quarkuscoffeeshop-homeoffice-ui","image":"image-registry.openshift-image-registry.svc:5000/quarkuscoffeeshop-cicd/quarkuscoffeeshop-homeoffice-ui:'$(params.IMAGE_TAG)'"}]}}}}' -n quarkuscoffeeshop-homeoffice
       runAfter:
         - tag-test-image
       taskRef:
