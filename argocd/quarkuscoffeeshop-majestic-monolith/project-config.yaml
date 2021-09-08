@@ -1,0 +1,15 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: quarkuscoffeeshop-majestic-monolith-1
+  namespace: quarkuscoffeeshop-cicd
+spec:
+  description: ArgoCD project for quarkuscoffeeshop-majestic-monolith (EDGE)
+  destinations:
+    - namespace: quarkuscoffeeshop-cicd
+      server: 'https://kubernetes.default.svc'
+    - namespace: quarkuscoffeeshop-integration
+      server: 'https://kubernetes.default.svc'
+  sourceRepos:
+    - >-
+      http://gogs-quarkuscoffeeshop-cicd.apps.ocp4.example.com/user1/tekton-pipelines.git

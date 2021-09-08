@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: homeoffice-ingress
+spec:
+  destination:
+    name: ''
+    namespace: ' quarkuscoffeeshop-cicd'
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: homeoffice-ingress
+    repoURL: >-
+      http://gogs-quarkuscoffeeshop-cicd.apps.ocp4.example.com/user1/tekton-pipelines.git
+    targetRevision: HEAD
+    directory:
+      jsonnet:
+        tlas:
+          - {}
+  project: default
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
