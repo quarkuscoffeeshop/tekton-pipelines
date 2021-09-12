@@ -1,0 +1,19 @@
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: quarkuscoffeeshop-homeoffice-ui
+  namespace: quarkuscoffeeshop-homeoffice
+  labels:
+    app: quarkuscoffeeshop-homeoffice-ui
+    app.kubernetes.io/component: quarkuscoffeeshop-homeoffice-ui
+    app.kubernetes.io/instance: quarkuscoffeeshop-homeoffice-ui
+spec:
+  host: >-
+    quarkuscoffeeshop-homeoffice-ui-quarkuscoffeeshop-homeoffice.apps.ocp4.example.com
+  to:
+    kind: Service
+    name: quarkuscoffeeshop-homeoffice-ui
+    weight: 100
+  port:
+    targetPort: 8080-tcp
+  wildcardPolicy: None

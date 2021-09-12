@@ -4,14 +4,27 @@
 ![homeoffice-dashboard](../images/homeoffice-dashboard.png)
 ![homeoffice-ui-pipeline](../images/homeoffice-ui-pipeline.png)
 
-**configure pvc**
+**Create Projects**
 ```
-oc -n quarkuscoffeeshop-cicd create -f quarkuscoffeeshop-homeoffice-ui/pvc/pvc.yml
+oc new-project quarkuscoffeeshop-cicd
+oc new-project quarkuscoffeeshop-homeoffice
+oc adm policy add-role-to-user admin system:serviceaccount:quarkuscoffeeshop-homeoffice:pipeline -n quarkuscoffeeshop-cicd
+oc policy add-role-to-group system:image-puller system:serviceaccounts:quarkuscoffeeshop-homeoffice -n quarkuscoffeeshop-cicd
+oc adm policy add-role-to-user admin system:serviceaccount:quarkuscoffeeshop-cicd:pipeline -n quarkuscoffeeshop-homeoffice
 ```
 
+## Deploy pipelines using kustomize
+---
+
+**Run the kustomize command to deploy pipelines** 
+```
+kustomize build quarkuscoffeeshop-homeoffice-ui | oc create -f - 
+```
+
+## Deploy pipelines Manually 
+---
 **configure Tasks**
 ```
-oc -n quarkuscoffeeshop-cicd create -f ./common-functions/tasks/openshift-client-task.yaml
 oc -n quarkuscoffeeshop-cicd create -f ./quarkuscoffeeshop-homeoffice-ui/tektontasks/s2i-nodejs-task.yaml
 oc -n  quarkuscoffeeshop-cicd create -f ./quarkuscoffeeshop-homeoffice-ui/tektontasks/pushImageToQuay.yaml
 ```
@@ -27,6 +40,8 @@ oc -n quarkuscoffeeshop-cicd create -f  ./quarkuscoffeeshop-homeoffice-ui/resour
 oc -n quarkuscoffeeshop-cicd create -f  ./quarkuscoffeeshop-homeoffice-ui/pipeline/deploy-pipeline.yaml
 ```
 
+## For Git WebHooks
+---
 **Create GitHub Trigger for Pipeline**
 ```
 oc -n quarkuscoffeeshop-cicd create -f ./triggerbinding-configs/webhook-roles.yaml

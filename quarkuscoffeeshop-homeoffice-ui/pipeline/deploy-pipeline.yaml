@@ -6,7 +6,7 @@ metadata:
     app: quarkuscoffeeshop-homeoffice-ui
 spec:
   params:
-    - default: takinosh
+    - default: quay-auth-secret
       name: quay-io-account
       type: string
     - default: >-
@@ -24,11 +24,6 @@ spec:
       description: Image Tag Value
       name: IMAGE_TAG
       type: string
-    - default: >-
-        --patch={"spec":{"template":{"spec":{"containers":[{"name":"quarkuscoffeeshop-homeoffice-ui","image":"image-registry.openshift-image-registry.svc:5000/quarkuscoffeeshop-cicd/quarkuscoffeeshop-homeoffice-ui:$(params.IMAGE_TAG)"}]}}}}
-      description: patch image
-      name: PATCH_IMAGE
-      type: string
     - default: webhook-secret
       description: Webhook secert name
       name: webhook-secret
@@ -39,7 +34,7 @@ spec:
     - name: image
       type: image
   tasks:
-    - name: build
+    - name: build-nodejsapp
       params:
         - name: TLSVERIFY
           value: 'false'
@@ -62,6 +57,11 @@ spec:
         - name: SCRIPT
           value: |
             oc tag quarkuscoffeeshop-homeoffice-ui:$(params.IMAGE_TAG) quarkuscoffeeshop-homeoffice-ui:latest
+      runAfter:
+        - build-nodejsapp
+      taskRef:
+        kind: ClusterTask
+        name: openshift-client
     - name: push-to-test-env
       params:
         - name: SCRIPT

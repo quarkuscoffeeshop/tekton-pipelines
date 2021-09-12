@@ -1,0 +1,20 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: quarkuscoffeeshop-homeoffice-ui
+  namespace: quarkuscoffeeshop-homeoffice
+  labels:
+    app: quarkuscoffeeshop-homeoffice-ui
+    app.kubernetes.io/component: quarkuscoffeeshop-homeoffice-ui
+    app.kubernetes.io/instance: quarkuscoffeeshop-homeoffice-ui
+  annotations:
+    openshift.io/generated-by: OpenShiftNewApp
+spec:
+  ports:
+    - name: 8080-tcp
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
+  selector:
+    deployment: quarkuscoffeeshop-homeoffice-ui
+  type: ClusterIP

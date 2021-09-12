@@ -1,0 +1,46 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  annotations:
+    image.openshift.io/triggers: >-
+      [{"from":{"kind":"ImageStreamTag","name":"quarkuscoffeeshop-homeoffice-ui:latest","namespace":"quarkuscoffeeshop-cicd"},"fieldPath":"spec.template.spec.containers[?(@.name==\"quarkuscoffeeshop-homeoffice-ui\")].image"}]
+    openshift.io/generated-by: OpenShiftNewApp
+  name: quarkuscoffeeshop-homeoffice-ui
+  namespace: quarkuscoffeeshop-homeoffice
+  labels:
+    app: quarkuscoffeeshop-homeoffice-ui
+    app.kubernetes.io/component: quarkuscoffeeshop-homeoffice-ui
+    app.kubernetes.io/instance: quarkuscoffeeshop-homeoffice-ui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      deployment: quarkuscoffeeshop-homeoffice-ui
+  template:
+    metadata:
+      labels:
+        deployment: quarkuscoffeeshop-homeoffice-ui
+    spec:
+      containers:
+        - name: quarkuscoffeeshop-homeoffice-ui
+          image: >-
+            image-registry.openshift-image-registry.svc:5000/quarkuscoffeeshop-cicd/quarkuscoffeeshop-homeoffice-ui@latest
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          imagePullPolicy: IfNotPresent
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      securityContext: {}
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
