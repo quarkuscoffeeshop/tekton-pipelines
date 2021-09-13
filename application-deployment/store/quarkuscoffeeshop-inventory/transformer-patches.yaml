@@ -1,0 +1,16 @@
+---
+# /spec/template/spec/containers/0/env/0/value -> KAFKA_BOOTSTRAP_URLSL
+apiVersion: builtin
+kind: PatchTransformer
+metadata:
+  name: quarkuscoffeeshop-inventory
+target:
+  group: apps
+  version: v1
+  kind: Deployment
+  namespace: quarkuscoffeeshop-demo
+  name: quarkuscoffeeshop-inventory
+patch: |-
+  - op: replace
+    path: /spec/template/spec/containers/0/env/0/value
+    value: "cafe-cluster-kafka-bootstrap:9092"

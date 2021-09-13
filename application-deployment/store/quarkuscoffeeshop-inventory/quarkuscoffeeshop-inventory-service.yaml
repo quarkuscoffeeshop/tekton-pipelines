@@ -1,0 +1,19 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: quarkuscoffeeshop-inventory
+  namespace: quarkuscoffeeshop-demo
+  labels:
+    app: quarkuscoffeeshop-inventory
+spec:
+  ports:
+    - name: 8080-tcp
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
+  selector:
+    app: quarkuscoffeeshop-inventory
+  type: ClusterIP
+  sessionAffinity: None
+status:
+  loadBalancer: {}
