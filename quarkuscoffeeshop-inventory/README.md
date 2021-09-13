@@ -1,4 +1,4 @@
-## quarkuscoffeeshop-inventory tekton pipeline
+# quarkuscoffeeshop-inventory tekton pipeline
 
 ## Deploy pipelines using kustomize
 > You may fork this repo and make edit to the `application-deployment/store/quarkuscoffeeshop-inventory/transformer-patches.yaml` in for GitOps or argocd
