@@ -13,6 +13,3 @@ resources:
   - resources/git-pipeline-resource.yaml
   - resources/image-pipeline-resource.yaml
   - pipeline/deploy-pipeline.yaml
-
-
-
