@@ -22,10 +22,7 @@ kustomize build quarkuscoffeeshop-barista | oc create -f -
 ```
 oc edit deployment.apps/quarkuscoffeeshop-barista  -n quarkuscoffeeshop-demo
 ```
-**Run the command below to enable to Anisble Tower Pipeline**
-```
- oc create -f quarkuscoffeeshop-barista/pipeline/deploy-to-edge-pipeline.yaml 
-```
+
 
 ## Deploy pipelines Manually 
 ---

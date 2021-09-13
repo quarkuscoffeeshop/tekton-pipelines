@@ -1,0 +1,40 @@
+---
+# /spec/template/spec/containers/0/env/0/value -> KAFKA_BOOTSTRAP_URLS
+# /spec/template/spec/containers/0/env/1/value -> PGSQL_URL
+# /spec/template/spec/containers/0/env/2/value -> PGSQL_USER
+# /spec/template/spec/containers/0/env/3/value -> PGSQL_PASS
+# /spec/template/spec/containers/0/env/4/value -> LOG_SQL
+# /spec/template/spec/containers/0/env/5/value -> QUARKUS_LOG_LEVEL
+# /spec/template/spec/containers/0/env/6/value -> QUARKUSCOFFEESHOP_LOG_LEVEL
+apiVersion: builtin
+kind: PatchTransformer
+metadata:
+  name: quarkuscoffeeshop-counter
+target:
+  group: apps
+  version: v1
+  kind: Deployment
+  namespace: quarkuscoffeeshop-demo
+  name: quarkuscoffeeshop-counter
+patch: |-
+  - op: replace
+    path: /spec/template/spec/containers/0/env/0/value
+    value: "cafe-cluster-kafka-bootstrap:9092"
+  - op: replace
+    path: /spec/template/spec/containers/0/env/1/value
+    value: "jdbc:postgresql://coffeeshopdb:5432/coffeeshopdb?currentSchema=coffeeshop"
+  - op: replace
+    path: /spec/template/spec/containers/0/env/2/value
+    value: "coffeshopadmin"
+  - op: replace
+    path: /spec/template/spec/containers/0/env/3/value
+    value: "CHANGEME"
+  - op: replace
+    path: /spec/template/spec/containers/0/env/4/value
+    value: "true"
+  - op: replace
+    path: /spec/template/spec/containers/0/env/5/value
+    value: "INFO"
+  - op: replace
+    path: /spec/template/spec/containers/0/env/6/value
+    value: "DEBUG"

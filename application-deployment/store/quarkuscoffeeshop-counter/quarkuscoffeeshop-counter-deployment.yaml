@@ -1,21 +1,3 @@
-kind: Service
-apiVersion: v1
-metadata:
-  name: quarkuscoffeeshop-counter
-  namespace: quarkuscoffeeshop-demo
-  labels:
-    app: quarkuscoffeeshop-counter
-spec:
-  ports:
-    - name: 8080-tcp
-      protocol: TCP
-      port: 8080
-      targetPort: 8080
-  selector:
-    app: quarkuscoffeeshop-counter
-  type: ClusterIP
-  sessionAffinity: None
----
 kind: Deployment
 apiVersion: apps/v1
 metadata:
