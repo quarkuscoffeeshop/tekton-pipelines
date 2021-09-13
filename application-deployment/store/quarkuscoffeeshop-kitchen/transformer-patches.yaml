@@ -1,5 +1,5 @@
 ---
-# /spec/template/spec/containers/0/env/0/value -> KAFKA_BOOTSTRAP_URLSL
+# /spec/template/spec/containers/0/env/0/value -> KAFKA_BOOTSTRAP_URL
 apiVersion: builtin
 kind: PatchTransformer
 metadata:

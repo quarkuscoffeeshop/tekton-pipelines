@@ -1,21 +1,3 @@
-kind: Service
-apiVersion: v1
-metadata:
-  name: quarkuscoffeeshop-web
-  namespace: quarkuscoffeeshop-demo
-  labels:
-    app: quarkuscoffeeshop-web
-spec:
-  ports:
-    - name: 8080-tcp
-      protocol: TCP
-      port: 8080
-      targetPort: 8080
-  selector:
-    app: quarkuscoffeeshop-web
-  type: ClusterIP
-  sessionAffinity: None
----
 kind: Deployment
 apiVersion: apps/v1
 metadata:
@@ -23,8 +5,6 @@ metadata:
   namespace: quarkuscoffeeshop-demo
   labels:
     app: quarkuscoffeeshop-web
-    app.kubernetes.io/name: quarkus
-    app.kubernetes.io/part-of: quarkuscoffeeshop
 spec:
   replicas: 1
   selector:
@@ -56,6 +36,8 @@ spec:
             - name: STREAM_URL
               value: >-
                 http://CHANGEME/dashboard/stream
+            - name: LOYALTY_STREAM_URL
+              value:  http://CHANGEME/dashboard/loyaltystream
             - name: CORS_ORIGINS
               value: >-
                 http://CHANGEME

@@ -1,0 +1,36 @@
+---
+# /spec/template/spec/containers/0/env/0/value -> KAFKA_BOOTSTRAP_SERVERS
+# /spec/template/spec/containers/0/env/1/value -> REST_URL
+# /spec/template/spec/containers/0/env/2/value -> STREAM_URL
+# /spec/template/spec/containers/0/env/3/value -> LOYALTY_STREAM_URL
+# /spec/template/spec/containers/0/env/4/value -> CORS_ORIGINS
+# /spec/template/spec/containers/0/env/5/value -> STORE_ID
+apiVersion: builtin
+kind: PatchTransformer
+metadata:
+  name: quarkuscoffeeshop-web
+target:
+  group: apps
+  version: v1
+  kind: Deployment
+  namespace: quarkuscoffeeshop-demo
+  name: quarkuscoffeeshop-web
+patch: |-
+  - op: replace
+    path: /spec/template/spec/containers/0/env/0/value
+    value: "cafe-cluster-kafka-bootstrap:9092"
+  - op: replace
+    path: /spec/template/spec/containers/0/env/1/value
+    value: "http://CHANGEME"
+  - op: replace
+    path: /spec/template/spec/containers/0/env/2/value
+    value: "http://CHANGEME/dashboard/stream"
+  - op: replace
+    path: /spec/template/spec/containers/0/env/3/value
+    value:  "http://CHANGEME/dashboard/loyaltystream"
+  - op: replace
+    path: /spec/template/spec/containers/0/env/4/value
+    value: "http://CHANGEME"
+  - op: replace
+    path: /spec/template/spec/containers/0/env/5/value
+    value: "ATLANTA"
