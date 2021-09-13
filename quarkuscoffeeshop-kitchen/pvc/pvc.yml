@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: quarkuscoffeeshop-kitchen-pipeline-task-cache-pvc
+  name: quarkuscoffeeshop-kitchen-pipeline-shared-workspace-pvc
   namespace: quarkuscoffeeshop-cicd
 spec:
   accessModes:

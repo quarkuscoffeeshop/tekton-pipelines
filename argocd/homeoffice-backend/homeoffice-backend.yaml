@@ -10,7 +10,7 @@ spec:
   source:
     path: homeoffice-backend
     repoURL: >-
-      http://gogs-quarkuscoffeeshop-cicd.apps.ocp4.example.com/user1/tekton-pipelines.git
+      https://github.com/quarkuscoffeeshop/tekton-pipelines.git
     targetRevision: HEAD
     directory:
       jsonnet:

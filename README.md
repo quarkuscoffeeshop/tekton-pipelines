@@ -26,7 +26,7 @@ $ ./deploy-quarkuscoffeeshop-ansible.sh
 $  ./deploy-quarkuscoffeeshop-ansible.sh  -d ocp4.example.com -o sha-123456789 -p 123456789 -s ATLANTA
 ```
 
-**Install OpenShift Pipelines 4.6**
+**Install OpenShift Pipelines**
 ```
 cat <<EOF | oc -n openshift-operators create -f -
 apiVersion: operators.coreos.com/v1alpha1

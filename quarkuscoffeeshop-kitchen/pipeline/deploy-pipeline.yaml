@@ -20,11 +20,6 @@ spec:
       description: webhook secret name
       name: webhook-secret
       type: string
-    - default: >-
-        --patch={"spec":{"template":{"spec":{"containers":[{"name":"quarkuscoffeeshop-kitchen","image":"image-registry.openshift-image-registry.svc:5000/quarkuscoffeeshop-cicd/quarkuscoffeeshop-kitchen:$(params.IMAGE_TAG)"}]}}}}
-      description: patch image
-      name: PATCH_IMAGE
-      type: string
   resources:
     - name: app-git
       type: git
@@ -85,11 +80,9 @@ spec:
           workspace: shared-workspace
     - name: tag-test-image
       params:
-        - name: ARGS
-          value:
-            - tag
-            - 'quarkuscoffeeshop-kitchen:$(params.IMAGE_TAG)'
-            - 'quarkuscoffeeshop-kitchen:latest'
+        - name: SCRIPT
+          value: |
+            oc tag quarkuscoffeeshop-kitchen:$(params.IMAGE_TAG) quarkuscoffeeshop-kitchen:latest
       runAfter:
         - build-java-app-image
       taskRef:
@@ -97,13 +90,9 @@ spec:
         name: openshift-client
     - name: push-to-test-env
       params:
-        - name: ARGS
-          value:
-            - patch
-            - deployment/quarkuscoffeeshop-kitchen
-            - $(params.PATCH_IMAGE)
-            - '-n'
-            - quarkuscoffeeshop-demo
+        - name: SCRIPT
+          value: |
+            oc patch deployment/quarkuscoffeeshop-kitchen  --patch='{"spec":{"template":{"spec":{"containers":[{"name":"quarkuscoffeeshop-kitchen","image":"image-registry.openshift-image-registry.svc:5000/quarkuscoffeeshop-cicd/quarkuscoffeeshop-kitchen:'$(params.IMAGE_TAG)'"}]}}}}' -n quarkuscoffeeshop-demo
       runAfter:
         - tag-test-image
       taskRef:

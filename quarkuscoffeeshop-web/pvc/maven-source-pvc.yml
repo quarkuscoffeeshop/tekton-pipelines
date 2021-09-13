@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: quarkuscoffeeshop-web-maven-source-pvc
+  name: quarkuscoffeeshop-web-maven-settings-pvc
   namespace: quarkuscoffeeshop-cicd
 spec:
   accessModes:
