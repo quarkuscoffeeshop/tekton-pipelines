@@ -41,20 +41,20 @@ REPO_URL='http://gogs-quarkuscoffeeshop-cicd.apps.cluster-e6dd.e6dd.sandbox568.o
 ## HOME Office (Backoffice)
 **quarkuscoffeeshop-homeoffice-ui argo application**  
 ```
-sed "s|%REPO_NAME%|'${REPO_URL}'|g" argocd/quarkuscoffeeshop-homeoffice-ui/quarkuscoffeeshop-homeoffice-ui-template.yaml  > argocd/quarkuscoffeeshop-homeoffice-ui/quarkuscoffeeshop-homeoffice-ui.yaml
-oc create -f argocd/quarkuscoffeeshop-homeoffice-ui/quarkuscoffeeshop-homeoffice-ui.yaml  -n openshift-gitops
+sed "s|%REPO_NAME%|'${REPO_URL}'|g" argocd/quarkuscoffeeshop-homeoffice-ui/quarkuscoffeeshop-homeoffice-ui-template.yaml  > argocd/quarkuscoffeeshop-homeoffice-ui/homeoffice-homeoffice-ui.yaml
+oc create -f argocd/homeoffice-homeoffice-ui/homeoffice-homeoffice-ui.yaml  -n openshift-gitops
 ```
 
 **homeoffice-backend argo application**  
 ```
-sed "s|%REPO_NAME%|'${REPO_URL}'|g" argocd/quarkuscoffeeshop-backend/quarkuscoffeeshop-backend-template.yaml  > argocd/quarkuscoffeeshop-backend/quarkuscoffeeshop-backend.yaml
-oc create -f argocd/quarkuscoffeeshop-backend/quarkuscoffeeshop-backend.yaml  -n openshift-gitops
+sed "s|%REPO_NAME%|'${REPO_URL}'|g" argocd/homeoffice-backend/homeoffice-backend-template.yaml  > argocd/homeoffice-backend/homeoffice-backend.yaml
+oc create -f argocd/homeoffice-backend/homeoffice-backend.yaml  -n openshift-gitops
 ```
 
 **homeoffice-ingress argo application**  
 ```
-sed "s|%REPO_NAME%|'${REPO_URL}'|g" argocd/quarkuscoffeeshop-ingress/quarkuscoffeeshop-ingress-template.yaml  > argocd/quarkuscoffeeshop-ingress/quarkuscoffeeshop-ingress.yaml
-oc create -f argocd/quarkuscoffeeshop-ingress/quarkuscoffeeshop-ingress.yaml  -n openshift-gitops
+sed "s|%REPO_NAME%|'${REPO_URL}'|g" argocd/homeoffice-ingress/homeoffice-ingress-template.yaml  > argocd/homeoffice-ingress/homeoffice-ingress.yaml
+oc create -f argocd/homeoffice-ingress/homeoffice-ingress.yaml  -n openshift-gitops
 ```
 
 ## Store front microservices  

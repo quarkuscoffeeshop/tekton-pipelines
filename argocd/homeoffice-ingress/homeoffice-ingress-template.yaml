@@ -5,16 +5,12 @@ metadata:
 spec:
   destination:
     name: ''
-    namespace: ' quarkuscoffeeshop-cicd'
+    namespace: 'quarkuscoffeeshop-cicd'
     server: 'https://kubernetes.default.svc'
   source:
     path: homeoffice-ingress
     repoURL: %REPO_NAME%
     targetRevision: HEAD
-    directory:
-      jsonnet:
-        tlas:
-          - {}
   project: default
   syncPolicy:
     automated:

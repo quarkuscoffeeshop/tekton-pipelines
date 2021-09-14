@@ -11,10 +11,6 @@ spec:
     path: homeoffice-backend
     repoURL: %REPO_NAME%
     targetRevision: HEAD
-    directory:
-      jsonnet:
-        tlas:
-          - {}
   project: default
   syncPolicy:
     automated:
