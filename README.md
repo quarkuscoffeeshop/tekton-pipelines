@@ -105,34 +105,30 @@ YAML
 ```
 
 ## HOME Office (Backoffice)
-**quarkuscoffeeshop-homeoffice-ui tekton pipline**  
+**quarkuscoffeeshop-homeoffice-ui tekton pipeline**  
 [quarkuscoffeeshop-homeoffice-ui](quarkuscoffeeshop-homeoffice-ui/README.md)
 
-**homeoffice-backend tekton pipline**  
+**homeoffice-backend tekton pipeline**  
 [homeoffice-backend](homeoffice-backend/README.md)
 
-**homeoffice-ingress tekton pipline**  
+**homeoffice-ingress tekton pipeline**  
 [homeoffice-ingress](homeoffice-ingress/README.md)
+
 
 ## Store front microservices  
 
-**quarkuscoffeeshop-barista tekton pipline**  
+**quarkuscoffeeshop-barista tekton pipeline**  
 [quarkuscoffeeshop-barista](quarkuscoffeeshop-barista/README.md)
 
-**quarkuscoffeeshop-counter tekton pipline**  
+**quarkuscoffeeshop-counter tekton pipeline**  
 [quarkuscoffeeshop-counter](quarkuscoffeeshop-counter/README.md)
 
-**quarkuscoffeeshop-kitchen tekton pipline**  
+**quarkuscoffeeshop-kitchen tekton pipeline**  
 [quarkuscoffeeshop-kitchen](quarkuscoffeeshop-kitchen/README.md)
 
-**quarkuscoffeeshop-homeoffice-ui tekton pipline**   
+**quarkuscoffeeshop-web tekton pipeline**   
 [quarkuscoffeeshop-web](quarkuscoffeeshop-web/README.md)
-
-
-**quarkuscoffeeshop-homeoffice-ui tekton pipline**   
-[quarkuscoffeeshop-web](quarkuscoffeeshop-web/README.md)
-
 
 ## RHEL Edge Pipelines
-**quarkuscoffeeshop-majestic-monolith tekton pipline**   
+**quarkuscoffeeshop-majestic-monolith tekton pipeline**   
 [quarkuscoffeeshop-majestic-monolith](quarkuscoffeeshop-majestic-monolith/README.md)

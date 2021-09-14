@@ -4,97 +4,91 @@
 1. Install OpenShifit GitOps Operator
 2. Install OpenShift Pipelines
 
+
+**Install argocd cli**
+```
+curl -OL https://github.com/argoproj/argo-cd/releases/download/v2.1.2/argocd-linux-amd64 
+sudo mv argocd-linux-amd64 /usr/local/bin/argocd
+sudo chmod +x /usr/local/bin/argocd
+```
+
 **Login to argocd**
 ```
-argoRoute=$(oc get route quarkuscoffeeshop-server -n quarkuscoffeeshop-cicd -o jsonpath='{.spec.host}')
+nameSpace=openshift-gitops
+argoRoute=$(oc get route openshift-gitops-server -n ${nameSpace} -o jsonpath='{.spec.host}')
 argoUser=admin
-argoPass=$(oc get secret/quarkuscoffeeshop-cluster -n quarkuscoffeeshop-cicd -o jsonpath='{.data.admin\.password}' | base64 -d)
+argoPass=$(oc get secret/openshift-gitops-cluster -n ${nameSpace} -o jsonpath='{.data.admin\.password}' | base64 -d)
 until [[ $(curl -ks -o /dev/null -w "%{http_code}"  https://${argoRoute}) -eq 200 ]]
 do
     sleep 3
     echo -n '.'
 done
 argocd login --insecure --grpc-web --username ${argoUser} --password ${argoPass} ${argoRoute}
-```
 
-**This gives the serviceAccount for ArgoCD the ability to manage the cluster.**
-```
-oc adm policy add-cluster-role-to-user cluster-admin -z quarkuscoffeeshop-argocd-application-controller -n quarkuscoffeeshop-cicd 
-oc adm policy add-cluster-role-to-user cluster-admin -z quarkuscoffeeshop-argocd-application-controller -n quarkuscoffeeshop-integration
-```
-
-```
-argocd cluster add $(oc config current-context) --name=quarkuscoffeeshop-cicd --in-cluster --system-namespace=quarkuscoffeeshop-cicd --namespace=quarkuscoffeeshop-cicd
-argocd cluster add $(oc config current-context) --name=quarkuscoffeeshop-cicd --in-cluster --system-namespace=quarkuscoffeeshop-integration --namespace=quarkuscoffeeshop-integration
-```
-
-
-**Export Enviornment variables**
-```
-export NAMESPACE=quarkuscoffeeshop-cicd
-export GIT_URL=http://gogs-demo.apps.edgetesting.sandbox1007.opentlc.com
-export GIT_USER=tosin
-export ARGOCD_PROJECT_NAME=coffee-shop
-export APP_NAME=quarkuscoffeeshop-majestic-monolith
-```
-
-**Add repo to  cluster**
-```
-argocd proj create ${ARGOCD_PROJECT_NAME} \
-  --dest https://kubernetes.default.svc,${NAMESPACE} \
-  --src ${GIT_URL}/${GITUSER}/tekton-pipelines.git \
-  --description "ArgoCD project for ${APP_NAME} (EDGE)"
-```
-
-**Add repo**
-```
-argocd repo add ${GIT_URL}/${GIT_USER}/tekton-pipelines --username ${GIT_USER} --password COmp12#$  --name ${ARGOCD_PROJECT_NAME} 
-```
-
-**Add the project ${OCP_USER}-pipeline as a valid destination**
-```
-argocd proj add-destination ${APP_NAME} https://kubernetes.default.svc ${NAMESPACE}
-```
-
-**Create Deployment**
-```
-argocd app create ${ARGOCD_PROJECT_NAME} \
-  --project ${ARGOCD_PROJECT_NAME} \
-  --repo ${GIT_URL}/${GIT_USER}/tekton-pipelines.git \
-  --path ${APP_NAME} \
-  --revision HEAD \
-  --dest-namespace ${NAMESPACE} \
-  --dest-server https://kubernetes.default.svc
-```
-
-**Create Gogs project**
-```
-oc new-project gogs
-oc new-app -f https://raw.githubusercontent.com/tosin2013/gogs-openshift-docker/master/openshift/gogs-persistent-template.yaml --param=HOSTNAME=gogs-demo.apps.edgetesting.sandbox1007.opentlc.com
-```
-
-oc extract secret/quarkuscoffeeshop-cluster -n quarkuscoffeeshop-cicd --to=-
-
-```
-argocd proj create quarkuscoffeeshop-majestic-monolith -d https://kubernetes.default.svc,quarkuscoffeeshop-cicd -s http://gogs-demo.apps.edgetesting.sandbox1007.opentlc.com/tosin/tekton-pipelines.git
+echo "$argoRoute"
+echo "$argoPass"
 ```
 
 
 
-
-
-
-
-
+# Configure REPO URL
+Fork [tekton-pipelines](https://github.com/quarkuscoffeeshop/tekton-pipelines.git) and update REPO_URL.
 ```
-oc adm policy add-cluster-role-to-user cluster-admin -z quarkuscoffeeshop-argocd-application-controller -n quarkuscoffeeshop-integration
+$ export REPO_URL='https://github.com/quarkuscoffeeshop/tekton-pipelines.git'
+REPO_URL='http://gogs-quarkuscoffeeshop-cicd.apps.cluster-e6dd.e6dd.sandbox568.opentlc.com/user1/tekton-pipelines.git'
 ```
 
+## HOME Office (Backoffice)
+**quarkuscoffeeshop-homeoffice-ui argo application**  
 ```
- argocd cluster add $(oc config current-context) --name=quarkuscoffeeshop-cicd --in-cluster --system-namespace=quarkuscoffeeshop-cicd --namespace=quarkuscoffeeshop-cicd
+sed "s|%REPO_NAME%|'${REPO_URL}'|g" argocd/quarkuscoffeeshop-homeoffice-ui/quarkuscoffeeshop-homeoffice-ui-template.yaml  > argocd/quarkuscoffeeshop-homeoffice-ui/quarkuscoffeeshop-homeoffice-ui.yaml
+oc create -f argocd/quarkuscoffeeshop-homeoffice-ui/quarkuscoffeeshop-homeoffice-ui.yaml  -n openshift-gitops
 ```
- 
+
+**homeoffice-backend argo application**  
+```
+sed "s|%REPO_NAME%|'${REPO_URL}'|g" argocd/quarkuscoffeeshop-backend/quarkuscoffeeshop-backend-template.yaml  > argocd/quarkuscoffeeshop-backend/quarkuscoffeeshop-backend.yaml
+oc create -f argocd/quarkuscoffeeshop-backend/quarkuscoffeeshop-backend.yaml  -n openshift-gitops
+```
+
+**homeoffice-ingress argo application**  
+```
+sed "s|%REPO_NAME%|'${REPO_URL}'|g" argocd/quarkuscoffeeshop-ingress/quarkuscoffeeshop-ingress-template.yaml  > argocd/quarkuscoffeeshop-ingress/quarkuscoffeeshop-ingress.yaml
+oc create -f argocd/quarkuscoffeeshop-ingress/quarkuscoffeeshop-ingress.yaml  -n openshift-gitops
+```
+
+## Store front microservices  
+
+**quarkuscoffeeshop-barista argo application**  
+```
+sed "s|%REPO_NAME%|'${REPO_URL}'|g" argocd/quarkuscoffeeshop-barista/quarkuscoffeeshop-barista-template.yaml  > argocd/quarkuscoffeeshop-barista/quarkuscoffeeshop-barista.yaml
+oc create -f argocd/quarkuscoffeeshop-barista/quarkuscoffeeshop-barista.yaml  -n openshift-gitops
+```
+
+**quarkuscoffeeshop-counter argo application**  
+```
+sed "s|%REPO_NAME%|'${REPO_URL}'|g" argocd/quarkuscoffeeshop-counter/quarkuscoffeeshop-counter-template.yaml  > argocd/quarkuscoffeeshop-counter/quarkuscoffeeshop-counter.yaml
+oc create -f argocd/quarkuscoffeeshop-counter/quarkuscoffeeshop-counter.yaml  -n openshift-gitops
+```
+
+**quarkuscoffeeshop-kitchen argo application**  
+```
+sed "s|%REPO_NAME%|'${REPO_URL}'|g" argocd/quarkuscoffeeshop-kitchen/quarkuscoffeeshop-kitchen-template.yaml  > argocd/quarkuscoffeeshop-kitchen/quarkuscoffeeshop-kitchen.yaml
+oc create -f argocd/quarkuscoffeeshop-kitchen/quarkuscoffeeshop-kitchen.yaml  -n openshift-gitops
+```
+
+**quarkuscoffeeshop-web argo application**   
+```
+sed "s|%REPO_NAME%|'${REPO_URL}'|g" argocd/quarkuscoffeeshop-web/quarkuscoffeeshop-web-template.yaml  > argocd/quarkuscoffeeshop-web/quarkuscoffeeshop-web.yaml
+oc create -f argocd/quarkuscoffeeshop-web/quarkuscoffeeshop-web.yaml  -n openshift-gitops
+```
+
+## RHEL Edge Pipelines
+**quarkuscoffeeshop-majestic-monolith argo application**   
+```
+sed "s|%REPO_NAME%|'${REPO_URL}'|g" argocd/quarkuscoffeeshop-monolith/quarkuscoffeeshop-monolith-template.yaml  > argocd/quarkuscoffeeshop-monolith/quarkuscoffeeshop-monolith.yaml
+oc create -f argocd/quarkuscoffeeshop-monolith/quarkuscoffeeshop-monolith.yaml  -n openshift-gitops
+```
 
 
- argocd cluster list
- source <(argocd completion bash)
+

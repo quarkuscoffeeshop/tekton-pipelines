@@ -9,8 +9,7 @@ spec:
     server: 'https://kubernetes.default.svc'
   source:
     path: quarkuscoffeeshop-web
-    repoURL: >-
-      https://github.com/quarkuscoffeeshop/tekton-pipelines.git
+    repoURL: %REPO_NAME%
     targetRevision: HEAD
   project: default
   syncPolicy:

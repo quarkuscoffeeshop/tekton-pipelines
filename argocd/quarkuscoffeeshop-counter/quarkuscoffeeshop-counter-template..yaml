@@ -1,21 +1,20 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: quarkuscoffeeshop-homeoffice-ui
+  name: quarkuscoffeeshop-counter
 spec:
   destination:
     name: ''
     namespace: quarkuscoffeeshop-cicd
     server: 'https://kubernetes.default.svc'
   source:
-    path: quarkuscoffeeshop-homeoffice-ui
-    repoURL: >-
-      https://github.com/quarkuscoffeeshop/tekton-pipelines.git
+    path: quarkuscoffeeshop-counter
+    repoURL: %REPO_NAME%
     targetRevision: HEAD
   project: default
   syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
     syncOptions:
       - CreateNamespace=true
+    automated:
+      prune: false
+      selfHeal: false
