@@ -8,6 +8,7 @@ bases:
 
 resources:
   - tektontasks/pushImageToQuay.yaml
+  - tektontasks/s2i-nodejs-task.yaml
   - resources/git-pipeline-resource.yaml
   - resources/image-pipeline-resource.yaml
   - pipeline/deploy-pipeline.yaml
