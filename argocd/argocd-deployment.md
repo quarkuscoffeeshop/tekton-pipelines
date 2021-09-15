@@ -1,9 +1,31 @@
 # Quarkus Coffeshop and Argocd
 
+## Install the ACM_WORKLOADS option from the deploy-quarkuscoffeeshop-ansible.sh
 
-1. Install OpenShifit GitOps Operator
-2. Install OpenShift Pipelines
-
+```
+$ curl -OL https://raw.githubusercontent.com/quarkuscoffeeshop/quarkuscoffeeshop-ansible/dev/files/deploy-quarkuscoffeeshop-ansible.sh
+$ chmod +x deploy-quarkuscoffeeshop-ansible.sh
+```
+## The script will provide the following
+* Gogs server
+* OpenShift Pipelines
+* OpenShift GitOps
+* Quay.io
+* AMQ Streams
+* Postgres Template deployment
+* homeoffice Tekton pipelines
+* quarkus-coffeeshop Tekton pipelines
+```
+$ cat >env.variables<<EOF
+ACM_WORKLOADS=y
+AMQ_STREAMS=y
+CONFIGURE_POSTGRES=y
+MONGODB_OPERATOR=n
+MONGODB=n
+HELM_DEPLOYMENT=n
+EOF
+$ ./deploy-quarkuscoffeeshop-ansible.sh -d ocp4.example.com -t sha-123456789 -p 123456789 -s ATLANTA
+```
 
 **Install argocd cli**
 ```
@@ -41,7 +63,7 @@ REPO_URL='http://gogs-quarkuscoffeeshop-cicd.apps.cluster-e6dd.e6dd.sandbox568.o
 ## HOME Office (Backoffice)
 **quarkuscoffeeshop-homeoffice-ui argo application**  
 ```
-sed "s|%REPO_NAME%|'${REPO_URL}'|g" argocd/quarkuscoffeeshop-homeoffice-ui/quarkuscoffeeshop-homeoffice-ui-template.yaml  > argocd/quarkuscoffeeshop-homeoffice-ui/quarkuscoffeeshop-homeoffice-ui.yaml
+sed "s|%REPO_NAME%|'${REPO_URL}'|g" argocd/quarkuscoffeeshop-homeoffice-ui/quarkuscoffeeshop-homeoffice-ui-template.yaml  > argocd/quarkuscoffeeshop-homeoffice-ui/homeoffice-homeoffice-ui.yaml
 oc create -f argocd/quarkuscoffeeshop-homeoffice-ui/quarkuscoffeeshop-homeoffice-ui.yaml  -n openshift-gitops
 ```
 
@@ -89,6 +111,5 @@ oc create -f argocd/quarkuscoffeeshop-web/quarkuscoffeeshop-web.yaml  -n openshi
 sed "s|%REPO_NAME%|'${REPO_URL}'|g" argocd/quarkuscoffeeshop-monolith/quarkuscoffeeshop-monolith-template.yaml  > argocd/quarkuscoffeeshop-monolith/quarkuscoffeeshop-monolith.yaml
 oc create -f argocd/quarkuscoffeeshop-monolith/quarkuscoffeeshop-monolith.yaml  -n openshift-gitops
 ```
-
 
 

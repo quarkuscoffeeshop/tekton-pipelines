@@ -1,115 +1,134 @@
-# Quarkus Coffeshop and Argocd
+# Docs
+Please see the Github Pages Site for complete documentation: [quarkuscoffeeshop.github.io](https://quarkuscoffeeshop.github.io)
 
-## Install the ACM_WORKLOADS option from the deploy-quarkuscoffeeshop-ansible.sh
+# quarkuscoffeeshop Tekton pipelines Guide
 
-```
-$ curl -OL https://raw.githubusercontent.com/quarkuscoffeeshop/quarkuscoffeeshop-ansible/dev/files/deploy-quarkuscoffeeshop-ansible.sh
-$ chmod +x deploy-quarkuscoffeeshop-ansible.sh
-```
-## The script will provide the following
-* Gogs server
-* OpenShift Pipelines
-* OpenShift GitOps
-* Quay.io
+### Requirements 
+* [Postgres Operator](https://github.com/quarkuscoffeeshop/quarkuscoffeeshop-helm/wiki#install-postgres-operator)
 * AMQ Streams
-* Postgres Template deployment
-* homeoffice Tekton pipelines
-* quarkus-coffeeshop Tekton pipelines
+
+**Once Postgres Operator Database is installed run the following below**
 ```
-$ cat >env.variables<<EOF
-ACM_WORKLOADS=y
-AMQ_STREAMS=y
-CONFIGURE_POSTGRES=y
-MONGODB_OPERATOR=n
-MONGODB=n
-HELM_DEPLOYMENT=n
+$ curl -OL https://raw.githubusercontent.com/quarkuscoffeeshop/quarkuscoffeeshop-ansible/master/files/deploy-quarkuscoffeeshop-ansible.sh
+$ chmod +x deploy-quarkuscoffeeshop-ansible.sh
+$ NAMESPACE=quarkuscoffeeshop-homeoffice
+$  sed -i "s/quarkuscoffeeshop-demo/${NAMESPACE}/g" deploy-quarkuscoffeeshop-ansible.sh
+$ ./deploy-quarkuscoffeeshop-ansible.sh 
+ Options:
+  -d      Add domain 
+  -o      OpenShift Token
+  -p      Postgres Password
+  -s      Store ID
+  -h      Display this help and exit
+  -r      Destroy coffeeshop 
+  To deploy qaurkuscoffeeshop-ansible playbooks
+  ./deploy-quarkuscoffeeshop-ansible.sh  -d ocp4.example.com -o sha-123456789 -p 123456789 -s ATLANTA
+$  ./deploy-quarkuscoffeeshop-ansible.sh  -d ocp4.example.com -o sha-123456789 -p 123456789 -s ATLANTA
+```
+
+**Install OpenShift Pipelines**
+```
+cat <<EOF | oc -n openshift-operators create -f -
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: openshift-pipelines-operator-rh
+spec:
+  channel: stable
+  installPlanApproval: Automatic
+  name: openshift-pipelines-operator-rh
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
 EOF
-$ ./deploy-quarkuscoffeeshop-ansible.sh -d ocp4.example.com -t sha-123456789 -p 123456789 -s ATLANTA
 ```
 
-**Install argocd cli**
+**Install tkn cli**  
+`on linux AMD 64`
 ```
-curl -OL https://github.com/argoproj/argo-cd/releases/download/v2.1.2/argocd-linux-amd64 
-sudo mv argocd-linux-amd64 /usr/local/bin/argocd
-sudo chmod +x /usr/local/bin/argocd
-```
-
-**Login to argocd**
-```
-nameSpace=openshift-gitops
-argoRoute=$(oc get route openshift-gitops-server -n ${nameSpace} -o jsonpath='{.spec.host}')
-argoUser=admin
-argoPass=$(oc get secret/openshift-gitops-cluster -n ${nameSpace} -o jsonpath='{.data.admin\.password}' | base64 -d)
-until [[ $(curl -ks -o /dev/null -w "%{http_code}"  https://${argoRoute}) -eq 200 ]]
-do
-    sleep 3
-    echo -n '.'
-done
-argocd login --insecure --grpc-web --username ${argoUser} --password ${argoPass} ${argoRoute}
-
-echo "$argoRoute"
-echo "$argoPass"
+# Get the tar.xz
+curl -LO https://github.com/tektoncd/cli/releases/download/v0.18.0/tkn_0.18.0_Linux_x86_64.tar.gz
+# Extract tkn to your PATH (e.g. /usr/local/bin)
+sudo tar xvzf tkn_0.18.0_Linux_x86_64.tar.gz -C /usr/local/bin/ tkn
 ```
 
-
-
-# Configure REPO URL
-Fork [tekton-pipelines](https://github.com/quarkuscoffeeshop/tekton-pipelines.git) and update REPO_URL.
+`on mac`
 ```
-$ export REPO_URL='https://github.com/quarkuscoffeeshop/tekton-pipelines.git'
-REPO_URL='http://gogs-quarkuscoffeeshop-cicd.apps.cluster-e6dd.e6dd.sandbox568.opentlc.com/user1/tekton-pipelines.git'
+brew install tektoncd-cli
+```
+
+**Create Quarkus Coffee Shop project**
+```
+oc new-project quarkuscoffeeshop-cicd
+```
+
+**Set up quay permissions**
+```
+oc  create -f sa/pipeline-sa.yaml 
+```
+**Set privileged containers for the pushImageroQuay task OCP 4.7.x**
+```
+oc adm policy add-scc-to-user privileged -z pipeline -n  quarkuscoffeeshop-cicd
+```
+
+**Set quay credentials**  
+```
+$ cat quay-secret.yml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: quay-auth-secret
+data:
+  .dockerconfigjson: changeinfo==
+type: kubernetes.io/dockerconfigjson
+```
+
+**Create secret**
+```
+oc create -f quay-secret.yml --namespace=quarkuscoffeeshop-cicd
+```
+
+**configure slack webhook**  
+* [tekton hub](https://hub-preview.tekton.dev/) 
+* [Sending messages using Incoming Webhooks](https://api.slack.com/messaging/webhooks)
+```
+# oc create -f event-notification/send-to-webhook-slack.yaml -n quarkuscoffeeshop-cicd
+# WEBHOOKURL=https://hooks.slack.com/services/xxxxx/Xxxxxx
+# cat >webhook-secret.yaml<<YAML
+kind: Secret
+apiVersion: v1
+metadata:
+  name: webhook-secret
+stringData:
+  url: ${WEBHOOKURL}
+YAML
+# oc create -f webhook-secret.yaml -n quarkuscoffeeshop-cicd
 ```
 
 ## HOME Office (Backoffice)
-**quarkuscoffeeshop-homeoffice-ui argo application**  
-```
-sed "s|%REPO_NAME%|'${REPO_URL}'|g" argocd/quarkuscoffeeshop-homeoffice-ui/quarkuscoffeeshop-homeoffice-ui-template.yaml  > argocd/quarkuscoffeeshop-homeoffice-ui/homeoffice-homeoffice-ui.yaml
-oc create -f argocd/quarkuscoffeeshop-homeoffice-ui/quarkuscoffeeshop-homeoffice-ui.yaml  -n openshift-gitops
-```
+**quarkuscoffeeshop-homeoffice-ui tekton pipeline**  
+[quarkuscoffeeshop-homeoffice-ui](quarkuscoffeeshop-homeoffice-ui/README.md)
 
-**homeoffice-backend argo application**  
-```
-sed "s|%REPO_NAME%|'${REPO_URL}'|g" argocd/homeoffice-backend/homeoffice-backend-template.yaml  > argocd/homeoffice-backend/homeoffice-backend.yaml
-oc create -f argocd/homeoffice-backend/homeoffice-backend.yaml  -n openshift-gitops
-```
+**homeoffice-backend tekton pipeline**  
+[homeoffice-backend](homeoffice-backend/README.md)
 
-**homeoffice-ingress argo application**  
-```
-sed "s|%REPO_NAME%|'${REPO_URL}'|g" argocd/homeoffice-ingress/homeoffice-ingress-template.yaml  > argocd/homeoffice-ingress/homeoffice-ingress.yaml
-oc create -f argocd/homeoffice-ingress/homeoffice-ingress.yaml  -n openshift-gitops
-```
+**homeoffice-ingress tekton pipeline**  
+[homeoffice-ingress](homeoffice-ingress/README.md)
+
 
 ## Store front microservices  
 
-**quarkuscoffeeshop-barista argo application**  
-```
-sed "s|%REPO_NAME%|'${REPO_URL}'|g" argocd/quarkuscoffeeshop-barista/quarkuscoffeeshop-barista-template.yaml  > argocd/quarkuscoffeeshop-barista/quarkuscoffeeshop-barista.yaml
-oc create -f argocd/quarkuscoffeeshop-barista/quarkuscoffeeshop-barista.yaml  -n openshift-gitops
-```
+**quarkuscoffeeshop-barista tekton pipeline**  
+[quarkuscoffeeshop-barista](quarkuscoffeeshop-barista/README.md)
 
-**quarkuscoffeeshop-counter argo application**  
-```
-sed "s|%REPO_NAME%|'${REPO_URL}'|g" argocd/quarkuscoffeeshop-counter/quarkuscoffeeshop-counter-template.yaml  > argocd/quarkuscoffeeshop-counter/quarkuscoffeeshop-counter.yaml
-oc create -f argocd/quarkuscoffeeshop-counter/quarkuscoffeeshop-counter.yaml  -n openshift-gitops
-```
+**quarkuscoffeeshop-counter tekton pipeline**  
+[quarkuscoffeeshop-counter](quarkuscoffeeshop-counter/README.md)
 
-**quarkuscoffeeshop-kitchen argo application**  
-```
-sed "s|%REPO_NAME%|'${REPO_URL}'|g" argocd/quarkuscoffeeshop-kitchen/quarkuscoffeeshop-kitchen-template.yaml  > argocd/quarkuscoffeeshop-kitchen/quarkuscoffeeshop-kitchen.yaml
-oc create -f argocd/quarkuscoffeeshop-kitchen/quarkuscoffeeshop-kitchen.yaml  -n openshift-gitops
-```
+**quarkuscoffeeshop-kitchen tekton pipeline**  
+[quarkuscoffeeshop-kitchen](quarkuscoffeeshop-kitchen/README.md)
 
-**quarkuscoffeeshop-web argo application**   
-```
-sed "s|%REPO_NAME%|'${REPO_URL}'|g" argocd/quarkuscoffeeshop-web/quarkuscoffeeshop-web-template.yaml  > argocd/quarkuscoffeeshop-web/quarkuscoffeeshop-web.yaml
-oc create -f argocd/quarkuscoffeeshop-web/quarkuscoffeeshop-web.yaml  -n openshift-gitops
-```
+**quarkuscoffeeshop-web tekton pipeline**   
+[quarkuscoffeeshop-web](quarkuscoffeeshop-web/README.md)
 
 ## RHEL Edge Pipelines
-**quarkuscoffeeshop-majestic-monolith argo application**   
-```
-sed "s|%REPO_NAME%|'${REPO_URL}'|g" argocd/quarkuscoffeeshop-monolith/quarkuscoffeeshop-monolith-template.yaml  > argocd/quarkuscoffeeshop-monolith/quarkuscoffeeshop-monolith.yaml
-oc create -f argocd/quarkuscoffeeshop-monolith/quarkuscoffeeshop-monolith.yaml  -n openshift-gitops
-```
-
-
+**quarkuscoffeeshop-majestic-monolith tekton pipeline**   
+[quarkuscoffeeshop-majestic-monolith](quarkuscoffeeshop-majestic-monolith/README.md)
