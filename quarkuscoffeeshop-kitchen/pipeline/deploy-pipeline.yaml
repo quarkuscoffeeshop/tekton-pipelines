@@ -113,19 +113,6 @@ spec:
       taskRef:
         kind: Task
         name: push-quarkuscoffeeshop-kitchen-image-to-quay
-    - name: send-to-webhook-slack
-      params:
-        - name: webhook-secret
-          value: $(params.webhook-secret)
-        - name: message
-          value: >-
-            Pipeline build pushed succesfully to 
-            $(params.quay-io-repository):$(params.quay-io-image-tag-name)
-      runAfter:
-        - push-quarkuscoffeeshop-kitchen-image-to-quay
-      taskRef:
-        kind: Task
-        name: send-to-webhook-slack
   workspaces:
     - name: shared-workspace
     - name: maven-settings
