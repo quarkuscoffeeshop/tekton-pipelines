@@ -53,10 +53,11 @@ echo "$argoPass"
 
 
 
-# Configure REPO URL
+## Configure REPO URL
 Fork [tekton-pipelines](https://github.com/quarkuscoffeeshop/tekton-pipelines.git) and update REPO_URL.
 ```
 $ export REPO_URL='https://github.com/quarkuscoffeeshop/tekton-pipelines.git'
+# Example Alternative Repo
 REPO_URL='http://gogs-quarkuscoffeeshop-cicd.apps.cluster-e6dd.e6dd.sandbox568.opentlc.com/user1/tekton-pipelines.git'
 ```
 
