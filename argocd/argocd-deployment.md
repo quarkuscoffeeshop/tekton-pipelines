@@ -64,7 +64,7 @@ REPO_URL='http://gogs-quarkuscoffeeshop-cicd.apps.cluster-e6dd.e6dd.sandbox568.o
 ## HOME Office (Backoffice)
 **quarkuscoffeeshop-homeoffice-ui argo application**  
 ```
-sed "s|%REPO_NAME%|'${REPO_URL}'|g" argocd/quarkuscoffeeshop-homeoffice-ui/quarkuscoffeeshop-homeoffice-ui-template.yaml  > argocd/quarkuscoffeeshop-homeoffice-ui/homeoffice-homeoffice-ui.yaml
+sed "s|%REPO_NAME%|'${REPO_URL}'|g" argocd/quarkuscoffeeshop-homeoffice-ui/quarkuscoffeeshop-homeoffice-ui-template.yaml  > argocd/quarkuscoffeeshop-homeoffice-ui/quarkuscoffeeshop-homeoffice-ui.yaml
 oc create -f argocd/quarkuscoffeeshop-homeoffice-ui/quarkuscoffeeshop-homeoffice-ui.yaml  -n openshift-gitops
 ```
 
