@@ -95,4 +95,4 @@ spec:
         secretName: quay-auth-secret
     - name: pipeline-cache
       persistentVolumeClaim:
-        claimName: pipeline-task-cache-pvc
+        claimName: homeoffice-pipeline-cache
