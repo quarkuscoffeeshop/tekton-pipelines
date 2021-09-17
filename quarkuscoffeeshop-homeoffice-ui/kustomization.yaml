@@ -7,6 +7,7 @@ bases:
 - ../application-deployment/homeoffice/quarkuscoffeeshop-homeoffice-ui
 
 resources:
+  - pvc/pvc.yml
   - tektontasks/pushImageToQuay.yaml
   - tektontasks/s2i-nodejs-task.yaml
   - resources/git-pipeline-resource.yaml
