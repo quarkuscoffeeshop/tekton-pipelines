@@ -11,5 +11,5 @@ target:
   name: homeoffice-backend
 patch: |-
   - op: replace
-    path: /spec/template/spec/containers/0/env/2/value
+    path: /spec/template/spec/containers/0/env/3/value
     value: "changepassword"
