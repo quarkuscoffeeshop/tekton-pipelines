@@ -71,6 +71,7 @@ spec:
     - command:
         - buildah
         - push
+        - '--tls-verify=false'
         - '--storage-driver=$(params.STORAGE_DRIVER)'
         - '--authfile'
         - /etc/secret-volume/.dockerconfigjson
