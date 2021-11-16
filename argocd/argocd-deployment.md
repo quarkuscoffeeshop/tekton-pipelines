@@ -94,6 +94,13 @@ sed "s|%REPO_NAME%|'${REPO_URL}'|g" argocd/quarkuscoffeeshop-counter/quarkuscoff
 oc create -f argocd/quarkuscoffeeshop-counter/quarkuscoffeeshop-counter.yaml  -n openshift-gitops
 ```
 
+**quarkuscoffeeshop-inventory argo application**  
+```
+sed "s|%REPO_NAME%|'${REPO_URL}'|g" argocd/quarkuscoffeeshop-inventory/quarkuscoffeeshop-inventory-template.yaml  > argocd/quarkuscoffeeshop-inventory/quarkuscoffeeshop-inventory.yaml
+oc create -f argocd/quarkuscoffeeshop-inventory/quarkuscoffeeshop-inventory.yaml  -n openshift-gitops
+```
+
+
 **quarkuscoffeeshop-kitchen argo application**  
 ```
 sed "s|%REPO_NAME%|'${REPO_URL}'|g" argocd/quarkuscoffeeshop-kitchen/quarkuscoffeeshop-kitchen-template.yaml  > argocd/quarkuscoffeeshop-kitchen/quarkuscoffeeshop-kitchen.yaml
