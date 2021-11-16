@@ -5,7 +5,7 @@ metadata:
 spec:
   destination:
     name: ''
-    namespace: ' quarkuscoffeeshop-cicd'
+    namespace: quarkuscoffeeshop-cicd
     server: 'https://kubernetes.default.svc'
   source:
     path: quarkuscoffeeshop-inventory
