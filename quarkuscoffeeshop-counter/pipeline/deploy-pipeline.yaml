@@ -32,6 +32,8 @@ spec:
           value: 'https://github.com/quarkuscoffeeshop/quarkuscoffeeshop-counter'
         - name: subdirectory
           value: ''
+        - name: revision
+          value: 5.0.3-SNAPSHOT
         - name: deleteExisting
           value: 'true'
       taskRef:

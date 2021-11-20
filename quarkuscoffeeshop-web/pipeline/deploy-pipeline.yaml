@@ -30,6 +30,8 @@ spec:
       params:
         - name: url
           value: 'https://github.com/quarkuscoffeeshop/quarkuscoffeeshop-web'
+        - name: revision
+          value: 5.0.3-SNAPSHOT
         - name: subdirectory
           value: ''
         - name: deleteExisting

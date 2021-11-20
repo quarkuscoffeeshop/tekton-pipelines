@@ -9,3 +9,5 @@ spec:
   params:
   - name: url
     value: https://github.com/quarkuscoffeeshop/quarkuscoffeeshop-inventory
+  - name: revision
+    value: 5.0.0-SNAPSHOT
