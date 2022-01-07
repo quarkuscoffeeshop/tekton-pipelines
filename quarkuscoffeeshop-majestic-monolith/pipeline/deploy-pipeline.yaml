@@ -24,11 +24,6 @@ spec:
       description: Webhook secret name
       name: webhook-secret
       type: string
-    - default: >-
-        --patch={"spec":{"template":{"spec":{"containers":[{"name":"quarkuscoffeeshop-majestic-monolith","image":"image-registry.openshift-image-registry.svc:5000/quarkuscoffeeshop-cicd/quarkuscoffeeshop-majestic-monolith:$(params.IMAGE_TAG)"}]}}}}
-      description: patch image
-      name: PATCH_IMAGE
-      type: string
   resources:
     - name: app-git
       type: git
