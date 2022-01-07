@@ -91,11 +91,9 @@ spec:
           workspace: shared-workspace
     - name: tag-test-image
       params:
-        - name: ARGS
-          value:
-            - tag
-            - 'quarkuscoffeeshop-majestic-monolith:$(params.IMAGE_TAG)'
-            - 'quarkuscoffeeshop-majestic-monolith:latest'
+        - name: SCRIPT
+          value: |
+            oc tag quarkuscoffeeshop-majestic-monolith:$(params.IMAGE_TAG) quarkuscoffeeshop-majestic-monolith:latest
       runAfter:
         - build-java-app-image
       taskRef:
@@ -103,13 +101,9 @@ spec:
         name: openshift-client
     - name: push-to-test-env
       params:
-        - name: ARGS
-          value:
-            - patch
-            - deployment/quarkuscoffeeshop-majestic-monolith
-            - $(params.PATCH_IMAGE)
-            - '-n'
-            - quarkuscoffeeshop-integration
+        - name: SCRIPT
+          value: |
+            oc patch deployment/quarkuscoffeeshop-majestic-monolith  --patch='{"spec":{"template":{"spec":{"containers":[{"name":"quarkuscoffeeshop-majestic-monolith","image":"image-registry.openshift-image-registry.svc:5000/quarkuscoffeeshop-cicd/quarkuscoffeeshop-majestic-monolith:'$(params.IMAGE_TAG)'"}]}}}}' -n quarkuscoffeeshop-integration
       runAfter:
         - tag-test-image
       taskRef:
@@ -145,19 +139,6 @@ spec:
       taskRef:
         kind: Task
         name: push-quarkuscoffeeshop-majestic-monolith-image-to-quay-latest
-    - name: send-to-webhook-slack
-      params:
-        - name: webhook-secret
-          value: $(params.webhook-secret)
-        - name: message
-          value: >-
-            Pipeline build pushed succesfully to 
-            $(params.quay-io-repository):$(params.quay-io-image-tag-name)
-      runAfter:
-        - push-quarkuscoffeeshop-majestic-monolith-image-to-quay-latest
-      taskRef:
-        kind: Task
-        name: send-to-webhook-slack
   workspaces:
     - name: shared-workspace
     - name: maven-settings

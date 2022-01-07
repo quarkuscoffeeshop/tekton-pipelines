@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: quarkuscoffeeshop-majestic-monolith-pipeline-task-cache-pvc
+  name: quarkuscoffeeshop-majestic-monolith-pipeline-shared-workspace-pvc
   namespace: quarkuscoffeeshop-cicd
 spec:
   accessModes:
