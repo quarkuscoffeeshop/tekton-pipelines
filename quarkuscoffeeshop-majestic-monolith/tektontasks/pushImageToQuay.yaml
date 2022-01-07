@@ -95,4 +95,4 @@ spec:
         secretName: quay-auth-secret
     - name: pipeline-cache
       persistentVolumeClaim:
-        claimName: quarkuscoffeeshop-majestic-monolith-pipeline-task-cache-pvc
+        claimName: quarkuscoffeeshop-majestic-monolith-pipeline-shared-workspace-pvc
