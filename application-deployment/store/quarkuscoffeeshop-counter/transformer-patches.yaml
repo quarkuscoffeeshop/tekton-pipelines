@@ -22,7 +22,7 @@ patch: |-
     value: "cafe-cluster-kafka-bootstrap:9092"
   - op: replace
     path: /spec/template/spec/containers/0/env/1/value
-    value: "jdbc:postgresql://coffeeshopdb:5432/coffeeshopdb?currentSchema=coffeeshop"
+    value: "jdbc:postgresql://coffeeshopdb-primary.quarkuscoffeeshop-demo.svc:5432/coffeeshopdb?currentSchema=coffeeshop"
   - op: replace
     path: /spec/template/spec/containers/0/env/2/value
     value: "coffeshopadmin"
