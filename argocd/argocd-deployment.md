@@ -29,7 +29,7 @@ $ ./deploy-quarkuscoffeeshop-ansible.sh -d ocp4.example.com -t sha-123456789 -p 
 
 **Install argocd cli**
 ```
-curl -OL https://github.com/argoproj/argo-cd/releases/download/v2.1.2/argocd-linux-amd64 
+curl -OL https://github.com/argoproj/argo-cd/releases/download/v2.4.8/argocd-linux-amd64 
 sudo mv argocd-linux-amd64 /usr/local/bin/argocd
 sudo chmod +x /usr/local/bin/argocd
 ```
