@@ -116,8 +116,9 @@ oc create -f argocd/quarkuscoffeeshop-web/quarkuscoffeeshop-web.yaml  -n openshi
 ## RHEL Edge Pipelines
 **quarkuscoffeeshop-majestic-monolith argo application**   
 ```
-sed "s|%REPO_NAME%|'${REPO_URL}'|g" argocd/quarkuscoffeeshop-monolith/quarkuscoffeeshop-monolith-template.yaml  > argocd/quarkuscoffeeshop-monolith/quarkuscoffeeshop-monolith.yaml
-oc create -f argocd/quarkuscoffeeshop-monolith/quarkuscoffeeshop-monolith.yaml  -n openshift-gitops
+sed "s|%REPO_NAME%|'${REPO_URL}'|g" argocd/quarkuscoffeeshop-majestic-monolith/edge-application-template.yaml > argocd/quarkuscoffeeshop-majestic-monolith/edge-application.yaml
+
+oc create -f argocd/quarkuscoffeeshop-majestic-monolith/edge-application.yaml  -n quarkuscoffeeshop-cicd
 ```
 
 
